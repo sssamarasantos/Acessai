@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/backgroudzin"
+    tools:context=".activitys.CadastroActivity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/imageView4"
+                android:layout_width="160dp"
+                android:layout_height="160dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                app:srcCompat="@drawable/prancheta" />
+
+            <TextView
+                android:id="@+id/lblNome"
+                android:layout_width="210dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="25dp"
+                android:fontFamily="@font/montserrat"
+                android:labelFor="@id/txtNome"
+                android:text="@string/lblNome"
+                android:textColor="#000000"
+                android:textSize="12sp" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center">
+
+                <EditText
+                    android:id="@+id/txtNome"
+                    android:layout_width="210dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:autofillHints="@string/txtNome"
+                    android:backgroundTint="#FFDA75"
+                    android:ems="10"
+                    android:fontFamily="@font/montserrat"
+                    android:hint="@string/txtNome"
+                    android:inputType="text"
+                    android:textColorHint="@android:color/darker_gray"
+                    android:textSize="14sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/lblEmail"
+                android:layout_width="210dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="25dp"
+                android:fontFamily="@font/montserrat"
+                android:labelFor="@id/txtEmail"
+                android:text="@string/lblEmail"
+                android:textColor="@android:color/black"
+                android:textSize="12sp" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center">
+
+                <EditText
+                    android:id="@+id/txtEmail"
+                    android:layout_width="210dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:backgroundTint="#FFDA75"
+                    android:ems="10"
+                    android:fontFamily="@font/montserrat"
+                    android:hint="@string/txtEmail"
+                    android:inputType="textEmailAddress"
+                    android:textColorHint="@android:color/darker_gray"
+                    android:textSize="14sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/lblSenha"
+                android:layout_width="210dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="25dp"
+                android:fontFamily="@font/montserrat"
+                android:labelFor="@id/txtSenha"
+                android:text="@string/lblSenha"
+                android:textColor="@android:color/black"
+                android:textSize="12sp" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                app:passwordToggleEnabled="true">
+
+                <EditText
+                    android:id="@+id/txtSenha"
+                    android:layout_width="210dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:backgroundTint="#FFDA75"
+                    android:ems="10"
+                    android:fontFamily="@font/montserrat"
+                    android:hint="@string/btnSenha"
+                    android:inputType="textPassword"
+                    android:textColorHint="@android:color/darker_gray"
+                    android:textSize="14sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/lblConfirmarSenha"
+                android:layout_width="210dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="25dp"
+                android:fontFamily="@font/montserrat"
+                android:labelFor="@id/txtConfirmarSenha"
+                android:text="@string/lblConfirmarSenha"
+                android:textColor="@android:color/black"
+                android:textSize="12sp" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                app:passwordToggleEnabled="true">
+
+                <EditText
+                    android:id="@+id/txtConfirmarSenha"
+                    android:layout_width="210dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:backgroundTint="#FFDA75"
+                    android:ems="10"
+                    android:fontFamily="@font/montserrat"
+                    android:hint="@string/txtConfirmarSenha"
+                    android:inputType="textPassword"
+                    android:textColorHint="@android:color/darker_gray"
+                    android:textSize="14sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/lblDeficiencia"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="30dp"
+                android:fontFamily="@font/montserrat"
+                android:text="@string/lblDeficiencia"
+                android:textColor="#000000"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <RadioGroup
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="97dp"
+                android:layout_marginTop="10dp">
+
+                <RadioButton
+                    android:id="@+id/rbAuditiva"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal|left"
+                    android:layout_marginTop="10dp"
+                    android:buttonTint="#FFDA75"
+                    android:fontFamily="@font/montserrat"
+                    android:text="@string/rbAuditiva"
+                    android:textColorHint="#000000"
+                    android:textSize="14sp" />
+
+                <RadioButton
+                    android:id="@+id/rbCognitiva"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center|left"
+                    android:layout_marginTop="10dp"
+                    android:buttonTint="#FFDA75"
+                    android:fontFamily="@font/montserrat"
+                    android:text="@string/rbCognitiva"
+                    android:textColorHint="#000000"
+                    android:textSize="14sp" />
+
+                <RadioButton
+                    android:id="@+id/rbVisual"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center|left"
+                    android:layout_marginTop="10dp"
+                    android:buttonTint="#FFDA75"
+                    android:fontFamily="@font/montserrat"
+                    android:text="@string/rbVisual"
+                    android:textColorHint="#000000"
+                    android:textSize="14sp" />
+
+                <RadioButton
+                    android:id="@+id/rbNenhuma"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center|left"
+                    android:layout_marginTop="10dp"
+                    android:buttonTint="#FFDA75"
+                    android:fontFamily="@font/montserrat"
+                    android:text="@string/rbNenhuma"
+                    android:textColorHint="#000000"
+                    android:textSize="14sp" />
+            </RadioGroup>
+
+            <Button
+                android:id="@+id/btnCadastro"
+                android:layout_width="150dp"
+                android:layout_height="65dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="35dp"
+                android:layout_marginBottom="250dp"
+                android:background="@drawable/lb1"
+                android:fontFamily="@font/montserrat"
+                android:lineHeight="15dp"
+                android:paddingBottom="8dp"
+                android:text="@string/btnCadastro"
+                android:textColor="@android:color/background_light"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <include layout="@layout/falar_botao" />
+
+    <include layout="@layout/libras_botao" />
+</FrameLayout>

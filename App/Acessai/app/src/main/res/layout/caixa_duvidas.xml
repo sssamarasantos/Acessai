@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:layout_gravity="bottom"
+        android:background="#FFFFFF"
+        android:gravity="bottom"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/txtComent"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:backgroundTint="@color/colorAccent"
+            android:ems="10"
+            android:fontFamily="@font/montserrat"
+            android:hint="Escreva sua dúvida aqui..."
+            android:imeOptions="actionDone"
+            android:inputType="text"
+            android:textSize="17sp" />
+
+        <ImageButton
+            android:id="@+id/btnImgFalarV"
+            android:layout_width="15dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_marginStart="1dp"
+            android:layout_weight="1"
+            android:background="@drawable/falar" />
+
+        <ImageButton
+            android:id="@+id/btnImgEnviar"
+            android:layout_width="15dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_marginStart="1dp"
+            android:layout_weight="1"
+            android:background="@drawable/postar" />
+    </LinearLayout>
+</FrameLayout>

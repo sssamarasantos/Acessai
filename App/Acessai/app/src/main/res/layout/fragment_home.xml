@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/backgroudzin"
+    tools:context=".fragments.HomeFragment">
+
+    <LinearLayout
+        android:id="@+id/frameHome"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageButton
+            android:id="@+id/btnImgAulas"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_gravity="center"
+            android:background="@drawable/aulas"
+            android:contentDescription="@string/lblAulas" />
+
+        <TextView
+            android:id="@+id/lblAulas"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/montserrat"
+            android:text="@string/lblAulas"
+            android:textSize="22sp" />
+
+        <ImageButton
+            android:id="@+id/btnImgCrono"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/planner"
+            android:contentDescription="@string/lblCrono" />
+
+        <TextView
+            android:id="@+id/lblCrono"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/montserrat"
+            android:text="@string/lblCrono"
+            android:textSize="22sp" />
+
+        <ImageButton
+            android:id="@+id/btnImgInfos"
+            android:layout_width="135dp"
+            android:layout_height="135dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="25dp"
+            android:background="@drawable/info"
+            android:contentDescription="@string/lblInfos" />
+
+        <TextView
+            android:id="@+id/lblInfos"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/montserrat"
+            android:text="@string/lblInfos"
+            android:textSize="22sp" />
+
+    </LinearLayout>
+
+    <include layout="@layout/libras_botao" />
+
+</FrameLayout>

@@ -1,0 +1,29 @@
+body
+{
+  background-color: white;
+}
+
+  ul
+  {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background-color: none;
+    float: center;
+  }
+
+  .nav-tabs
+  {
+    border-bottom-color: transparent; 
+  }
+
+  a.nav-link
+  {
+    color: #333;
+    font-style: bold;
+    font-size: 20px;
+    margin-right: 30px;
+    background-color: white;
+    border-bottom-color: transparent; 
+  }
