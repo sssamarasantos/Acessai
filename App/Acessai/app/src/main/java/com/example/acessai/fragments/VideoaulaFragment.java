@@ -60,7 +60,7 @@ public class VideoaulaFragment extends Fragment {
     private ToggleButton libras;
     private String url = "", ret = "", nStatus, aStatus, nClassificar, classificacao;
     public static String nVideo, nTitulo, nAutor, nData, idAutor, idVideoula;
-    private String host = "http://acessai.000webhostapp.com/app/";
+    private String host = "http://acessai1.000webhostapp.com/app/";
     private final int ID_TEXTO_PARA_VOZ = 100;
     boolean dadosValidados;
     Metodos metodo = new Metodos();

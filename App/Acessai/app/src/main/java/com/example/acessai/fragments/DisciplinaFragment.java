@@ -28,7 +28,7 @@ public class DisciplinaFragment extends Fragment {
     private VideoView videoLibras;
     private FrameLayout frameLogin, frameLibras;
     private ToggleButton libras;
-    private String host = "http://acessai.000webhostapp.com/app/";
+    private String host = "http://acessai1.000webhostapp.com/app/";
     //private String host = "http://192.168.15.9/tcc/";
     private String url = "", ret="";
     Metodos metodo = new Metodos();

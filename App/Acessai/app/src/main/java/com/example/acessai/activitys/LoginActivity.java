@@ -44,7 +44,7 @@ public class LoginActivity extends AppCompatActivity {
     private ImageButton falar;
     private FrameLayout frameLogin, frameLibras;
     private ToggleButton libras;
-    private String host = "http://acessai.000webhostapp.com/app/";
+    private String host = "http://acessai1.000webhostapp.com/app";
     //private String host = "http://192.168.15.9/tcc/";
     private String url = "", ret = "";
     boolean dadosValidados;
@@ -206,7 +206,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 		//instancia o endereço web para qual se quer ir
-                Uri acessar = Uri.parse("http://acessai.000webhostapp.com/site/trabalhe.php");
+                Uri acessar = Uri.parse("http://acessai1.000webhostapp.com/site/trabalhe.php");
 
 		//instancia o intent e coloca a ação e a variavel com o endereço
                 Intent i = new Intent(Intent.ACTION_VIEW, acessar);

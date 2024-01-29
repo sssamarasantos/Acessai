@@ -18,7 +18,7 @@ import com.koushikdutta.ion.Ion;
 //metodo
 public class Metodos {
     //atribuir variaveis
-    String host = "http://acessai.000webhostapp.com/app/";
+    String host = "http://acessai1.000webhostapp.com/app/";
     //private String host = "http://192.168.15.9/tcc/";
     String url = "", ret = "";
     String id, nomeu, emailu, senhau, assistenciau;

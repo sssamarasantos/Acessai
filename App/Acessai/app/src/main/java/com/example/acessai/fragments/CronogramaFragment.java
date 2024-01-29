@@ -45,7 +45,7 @@ public class CronogramaFragment extends Fragment {
     private ArrayAdapter<Cronograma> adaptador;
     private ListaAdapterCrono listAdapter;
     public static String iVideoaula, nVideoaula;
-    private String host = "http://acessai.000webhostapp.com/app/";
+    private String host = "http://acessai1.000webhostapp.com/app/";
     private String url = "", ret="", s="";
     Metodos metodo = new Metodos();
 

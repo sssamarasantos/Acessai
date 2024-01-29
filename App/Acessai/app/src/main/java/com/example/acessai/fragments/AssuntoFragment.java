@@ -40,7 +40,7 @@ public class AssuntoFragment extends Fragment {
     private List<String> listaa;
     private List<String> listaId;
     private ArrayAdapter<String> adaptador;
-    private String host = "http://acessai.000webhostapp.com/app/";
+    private String host = "http://acessai1.000webhostapp.com/app/";
     //private String host = "http://192.168.15.9/tcc/";
     private String url = "", ret="", disc;
     public static String iAssunto, nAssunto;

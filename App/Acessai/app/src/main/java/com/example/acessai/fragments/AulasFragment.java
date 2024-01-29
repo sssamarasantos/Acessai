@@ -39,7 +39,7 @@ public class AulasFragment extends Fragment {
     private List<String> idVideoaula;
     private ArrayAdapter<Videoaulas> adaptador;
     private ListAdapterAulas listAdapter;
-    private String host = "http://acessai.000webhostapp.com/app/";
+    private String host = "http://acessai1.000webhostapp.com/app/";
     private String url = "", ret = "";
     public static String nVideoaula, iVideoaula;
     Metodos metodo = new Metodos();

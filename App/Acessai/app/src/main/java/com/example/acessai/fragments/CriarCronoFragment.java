@@ -49,7 +49,7 @@ public class CriarCronoFragment extends Fragment {
     private ToggleButton libras;
     private List<String> videoaulas;
     private ArrayAdapter<String> adaptador;
-    private String host = "http://acessai.000webhostapp.com/app/";
+    private String host = "http://acessai1.000webhostapp.com/app/";
     private String url = "", ret = "", videosx, horax, datax;
     Metodos metodo = new Metodos();
     boolean dadosValidados;
