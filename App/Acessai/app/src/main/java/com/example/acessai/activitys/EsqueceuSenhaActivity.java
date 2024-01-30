@@ -37,7 +37,7 @@ public class EsqueceuSenhaActivity extends AppCompatActivity {
     private VideoView videoLibras;
     private FrameLayout frameLibras;
     private ToggleButton libras;
-    private String HOST = new Host().getHost();
+    private final String HOST_APP = new Host().getUrlApp();
     private final int ID_TEXTO_PARA_VOZ = 100;
 
     Utils utils = new Utils();
@@ -100,7 +100,7 @@ public class EsqueceuSenhaActivity extends AppCompatActivity {
     private void forgotPassword(String emailf) {
         boolean isValidData = validateFields(emailf);
         if (isValidData) {
-            String url = HOST + "/recuperarSenha.php";
+            String url = HOST_APP + "/recuperarSenha.php";
             Ion.with(EsqueceuSenhaActivity.this)
                     .load(url)
                     .setBodyParameter("email", emailf)
@@ -161,10 +161,10 @@ public class EsqueceuSenhaActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == ID_TEXTO_PARA_VOZ) {
-            if (resultCode == RESULT_OK && null != data) {
-                ArrayList<String> result = data
-                        .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-                assert result != null;
+                    if (resultCode == RESULT_OK && null != data) {
+                        ArrayList<String> result = data
+                                .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                        assert result != null;
                 String saying = result.get(0);
                 email.setText(saying);
             }

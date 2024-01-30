@@ -39,7 +39,7 @@ public class CadastroActivity extends AppCompatActivity {
     private VideoView videoLibras;
     private String assistencia = "";
     private String loginx, nomex, senhax, confSenhax;
-    private String HOST = new Host().getHost();
+    private final String HOST_APP = new Host().getUrlApp();
     private final int ID_TEXTO_PARA_VOZ = 100;
 
     Utils utils = new Utils();
@@ -150,7 +150,7 @@ public class CadastroActivity extends AppCompatActivity {
         boolean isValidData = validateFields();
 
         if (isValidData) {
-            String url = HOST + "/cadastrar.php";
+            String url = HOST_APP + "/cadastrar.php";
             Ion.with(CadastroActivity.this)
                     .load(url)
                     .setBodyParameter("login", loginx)

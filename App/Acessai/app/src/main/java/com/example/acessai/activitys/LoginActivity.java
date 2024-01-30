@@ -32,7 +32,8 @@ public class LoginActivity extends AppCompatActivity {
     private ImageButton falar;
     private FrameLayout  frameLibras;
     private ToggleButton libras;
-    private final String HOST = new Host().getHost();
+    private final String HOST_APP = new Host().getUrlApp();
+    private final String HOST_SITE = new Host().getUrlSite();
     private final int ID_TEXTO_PARA_VOZ = 100;
 
     Utils utils = new Utils();
@@ -155,7 +156,7 @@ public class LoginActivity extends AppCompatActivity {
 	    //evento do botão trabalhe conosco
         trabalheConosco.setOnClickListener(v -> {
             //instancia o endereço web para qual se quer ir
-            Uri acessar = Uri.parse( HOST + "/trabalhe.php");
+            Uri acessar = Uri.parse( HOST_SITE + "/trabalhe.php");
 
             //instancia o intent e coloca a ação e a variavel com o endereço
             Intent i = new Intent(Intent.ACTION_VIEW, acessar);
@@ -175,7 +176,7 @@ public class LoginActivity extends AppCompatActivity {
         if (isValidData) {
 
 	        //chama o endereço onde esta localizado o php
-            String url = HOST + "/login.php";
+            String url = HOST_APP + "/login.php";
 
 	        //declara o contexto
             Ion.with(LoginActivity.this)

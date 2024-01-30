@@ -37,7 +37,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private VideoView videoLibras;
     private FrameLayout frameLibras;
     private ToggleButton libras;
-    private String HOST = new Host().getHost();
+    private final String HOST_APP = new Host().getUrlApp();
     public static String assistenciaAluno;
 
     Utils utils = new Utils();
@@ -133,7 +133,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void callAssistance(String user) {
-        String url = HOST + "/usuario.php";
+        String url = HOST_APP + "/usuario.php";
         Ion.with(getBaseContext())
                 .load(url)
                 .setBodyParameter("usuario", user)

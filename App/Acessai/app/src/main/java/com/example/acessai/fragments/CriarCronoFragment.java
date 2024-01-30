@@ -1,23 +1,18 @@
 package com.example.acessai.fragments;
 
-import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.CompoundButton;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.Spinner;
-import android.widget.TimePicker;
 import android.widget.ToggleButton;
 import android.widget.VideoView;
 
@@ -27,10 +22,9 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.acessai.R;
+import com.example.acessai.classes.Host;
 import com.example.acessai.classes.Utils;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 
 import java.util.ArrayList;
@@ -41,19 +35,18 @@ public class CriarCronoFragment extends Fragment {
 
     private Spinner videos;
     private EditText hora, data;
-    private ImageButton criar, salvar, eHora, eData;
     private DatePickerDialog datePickerDialog;
     private TimePickerDialog timePickerDialog;
     private VideoView videoLibras;
-    private FrameLayout frameLogin, frameLibras;
+    private FrameLayout frameLibras;
     private ToggleButton libras;
     private List<String> videoaulas;
     private ArrayAdapter<String> adaptador;
-    private String host = "http://acessai1.000webhostapp.com/app/";
-    private String url = "", ret = "", videosx, horax, datax;
-    Utils utils = new Utils();
-    boolean dadosValidados;
+    private final String HOST_APP = new Host().getUrlApp();
+    private String videosx, horax, datax;
     int idcrono;
+
+    Utils utils = new Utils();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -62,23 +55,24 @@ public class CriarCronoFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_criar_crono, container, false);
         final Context context = inflater.getContext();
 
-        frameLogin = (FrameLayout) view.findViewById(R.id.librasBotao);
         frameLibras = (FrameLayout) view.findViewById(R.id.frameLibras);
         libras = (ToggleButton) view.findViewById(R.id.tbLibras);
         videoLibras = (VideoView) view.findViewById(R.id.videoLibras);
         videos = (Spinner) view.findViewById(R.id.spinner);
         hora = (EditText) view.findViewById(R.id.hora);
         data = (EditText) view.findViewById(R.id.data);
-        criar = (ImageButton) view.findViewById(R.id.btnCriar);
-        salvar = (ImageButton) view.findViewById(R.id.btnSalvar);
-        eData = (ImageButton) view.findViewById(R.id.btnEscolherData);
-        eHora = (ImageButton) view.findViewById(R.id.btnEscolherHora);
-        videoaulas = new ArrayList<String>();
+        ImageButton criar = (ImageButton) view.findViewById(R.id.btnCriar);
+        ImageButton salvar = (ImageButton) view.findViewById(R.id.btnSalvar);
+        ImageButton eData = (ImageButton) view.findViewById(R.id.btnEscolherData);
+        ImageButton eHora = (ImageButton) view.findViewById(R.id.btnEscolherHora);
+        videoaulas = new ArrayList<>();
 
         salvar.setVisibility(View.INVISIBLE);
 
+        assert this.getArguments() != null;
         String tipo = this.getArguments().getString("tipo");
 
+        assert tipo != null;
         if (tipo.equals("editar")){
             criar.setVisibility(View.INVISIBLE);
             salvar.setVisibility(View.VISIBLE);
@@ -87,200 +81,152 @@ public class CriarCronoFragment extends Fragment {
             hora.setText(this.getArguments().getString("hora"));
         }
 
-        chamarVideoaulas(context);
+        callVideoClass(context);
         utils.showLibras(frameLibras, libras, HomeFragment.assistenciaAluno);
 
-        criar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                videosx = videos.getSelectedItem().toString();
-                horax = hora.getText().toString();
-                datax = data.getText().toString();
-                inserirCrono();
-            }
+        criar.setOnClickListener(v -> {
+            videosx = videos.getSelectedItem().toString();
+            horax = hora.getText().toString();
+            datax = data.getText().toString();
+            insertSchedule(context);
         });
 
-        salvar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                videosx = videos.getSelectedItem().toString();
-                horax = hora.getText().toString();
-                datax = data.getText().toString();
-                alterarCrono();
-            }
+        salvar.setOnClickListener(v -> {
+            videosx = videos.getSelectedItem().toString();
+            horax = hora.getText().toString();
+            datax = data.getText().toString();
+            updateSchedule(context);
         });
 
-        eData.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final Calendar calendar = Calendar.getInstance();
-                int dia = calendar.get(Calendar.DAY_OF_MONTH);
-                int mes = calendar.get(Calendar.MONTH);
-                int ano = calendar.get(Calendar.YEAR);
+        eData.setOnClickListener(v -> {
+            final Calendar calendar = Calendar.getInstance();
+            int dia = calendar.get(Calendar.DAY_OF_MONTH);
+            int mes = calendar.get(Calendar.MONTH);
+            int ano = calendar.get(Calendar.YEAR);
 
-                datePickerDialog = new DatePickerDialog(context, new DatePickerDialog.OnDateSetListener() {
-                    @SuppressLint("SetTextI18n")
-                    @Override
-                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                        data.setText(dayOfMonth + "/" + (month + 1) + "/" + year);
-                    }
-                }, ano, mes, dia);
-                datePickerDialog.show();
-            }
+            datePickerDialog = new DatePickerDialog(context, (view1, year, month, dayOfMonth) -> data.setText(dayOfMonth + "/" + (month + 1) + "/" + year), ano, mes, dia);
+            datePickerDialog.show();
         });
 
-        eHora.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final Calendar calendar1 = Calendar.getInstance();
-                final int horaa = calendar1.get(Calendar.HOUR_OF_DAY);
-                int minutos = calendar1.get(Calendar.MINUTE);
+        eHora.setOnClickListener(v -> {
+            final Calendar calendar1 = Calendar.getInstance();
+            final int horaa = calendar1.get(Calendar.HOUR_OF_DAY);
+            int minutos = calendar1.get(Calendar.MINUTE);
 
-                timePickerDialog = new TimePickerDialog(context, new TimePickerDialog.OnTimeSetListener() {
-                    @SuppressLint("SetTextI18n")
-                    @Override
-                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                        hora.setText(hourOfDay + ":" + minute);
-                    }
-                }, horaa, minutos, false);
-                timePickerDialog.show();
-            }
+            timePickerDialog = new TimePickerDialog(context, (view12, hourOfDay, minute) ->
+                    hora.setText(hourOfDay + ":" + minute), horaa, minutos, false);
+            timePickerDialog.show();
         });
 
-        libras.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    libras.setText("");
-                    frameLibras.setVisibility(View.VISIBLE);
-                    //video
-                    String videoPath = "android.resource://" + context.getPackageName() + "/" + R.raw.video_demonstrar;
-                    utils.showVideo(videoLibras, videoPath);
-                } else {
-                    libras.setText("");
-                    frameLibras.setVisibility(View.INVISIBLE);
-                }
+        libras.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                libras.setText("");
+                frameLibras.setVisibility(View.VISIBLE);
+                //video
+                String videoPath = "android.resource://" + context.getPackageName() + "/" + R.raw.video_demonstrar;
+                utils.showVideo(videoLibras, videoPath);
+            } else {
+                libras.setText("");
+                frameLibras.setVisibility(View.INVISIBLE);
             }
         });
         return view;
     }
 
-    private void chamarVideoaulas(final Context con){
-        url = host + "/chamarVideoaulas.php";
-        Ion.with(getContext())
+    private void callVideoClass(final Context context){
+        String url = HOST_APP + "/chamarVideoaulas.php";
+        Ion.with(context)
                 .load(url)
                 .setBodyParameter("assistencia", HomeFragment.assistenciaAluno)
                 .asJsonArray()
-                .setCallback(new FutureCallback<JsonArray>() {
-                    @Override
-                    public void onCompleted(Exception e, JsonArray result) {
-                        for (int i = 0; i < result.size(); i++){
-                            JsonObject ret = result.get(i).getAsJsonObject();
-                            videoaulas.add(ret.get("NOME_VIDEOAULA").getAsString());
-                        }
-                        adaptador = new ArrayAdapter<String>(con, android.R.layout.simple_spinner_item, videoaulas);
-                        adaptador.setDropDownViewResource(android.R.layout.simple_spinner_item);
-                        videos.setAdapter(adaptador);
+                .setCallback((e, result) -> {
+                    for (int i = 0; i < result.size(); i++){
+                        JsonObject response = result.get(i).getAsJsonObject();
+                        videoaulas.add(response.get("NOME_VIDEOAULA").getAsString());
                     }
+                    adaptador = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, videoaulas);
+                    adaptador.setDropDownViewResource(android.R.layout.simple_spinner_item);
+                    videos.setAdapter(adaptador);
                 });
     }
 
-    private void inserirCrono(){
-        dadosValidados = validarCampos();
+    private void insertSchedule(final Context context){
+        boolean isValidData = validateFields();
 
-        if (dadosValidados) {
-            url = host + "/inserirCrono.php";
+        if (isValidData) {
+            String url = HOST_APP + "/inserirCrono.php";
 
-            Ion.with(getContext())
+            Ion.with(context)
                     .load(url)
                     .setBodyParameter("hora_crono", horax)
                     .setBodyParameter("dta_crono", datax)
                     .setBodyParameter("id_aluno", HomeFragment.idAluno)
                     .setBodyParameter("nome_videoaula", videosx)
                     .asJsonObject()
-                    .setCallback(new FutureCallback<JsonObject>() {
-                        @Override
-                        public void onCompleted(Exception e, JsonObject result) {
-                            ret = result.get("status").getAsString();
-                            if (ret.equals("ok")) {
-                                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                                builder.setMessage("Criado com sucesso!");
-                                builder.setTitle("Aviso");
-                                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
+                    .setCallback((e, result) -> {
+                        String status = result.get("status").getAsString();
+                        if (status.equals("ok")) {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                            builder.setMessage("Criado com sucesso!");
+                            builder.setTitle("Aviso");
+                            builder.setPositiveButton("OK", (dialog, which) -> {
 
-                                        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                                        fragmentTransaction.replace(R.id.fragment_container, new CronogramaFragment()).commit();
-
-                                        //Intent objLogin = new Intent(CriarCronoActivity.this, CronogramaActivity.class);
-                                        //startActivity(objLogin);
-                                        //CriarCronoActivity.this.finish();
-                                    }
-                                });
-                                builder.create().show();
-                            } else {
-                                utils.showAlert("Algo deu errado :(", getContext());
-                                data.setText("");
-                                hora.setText("");
-                            }
+                                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                                fragmentTransaction.replace(R.id.fragment_container, new CronogramaFragment()).commit();
+                            });
+                            builder.create().show();
+                        } else {
+                            utils.showAlert("Algo deu errado :(", context);
+                            data.setText("");
+                            hora.setText("");
                         }
                     });
         }
     }
 
-    private void alterarCrono(){
-        dadosValidados = validarCampos();
+    private void updateSchedule(final  Context context){
+        boolean isValidData = validateFields();
 
-        if (dadosValidados) {
-            url = host + "/alterarCrono.php";
+        if (isValidData) {
+            String url = HOST_APP + "/alterarCrono.php";
 
-            Ion.with(getContext())
+            Ion.with(context)
                     .load(url)
                     .setBodyParameter("hora_crono", horax)
                     .setBodyParameter("dta_crono", datax)
                     .setBodyParameter("id_crono", String.valueOf(idcrono))
                     .setBodyParameter("nome_videoaula", videosx)
                     .asJsonObject()
-                    .setCallback(new FutureCallback<JsonObject>() {
-                        @Override
-                        public void onCompleted(Exception e, JsonObject result) {
-                            ret = result.get("status").getAsString();
-                            if (ret.equals("ok")) {
-                                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                                builder.setMessage("Alterado com sucesso!");
-                                builder.setTitle("Aviso");
-                                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
+                    .setCallback((e, result) -> {
+                        String status = result.get("status").getAsString();
+                        if (status.equals("ok")) {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                            builder.setMessage("Alterado com sucesso!");
+                            builder.setTitle("Aviso");
+                            builder.setPositiveButton("OK", (dialog, which) -> {
 
-                                        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                                        fragmentTransaction.replace(R.id.fragment_container, new CronogramaFragment()).commit();
-
-                                        //Intent objLogin = new Intent(CriarCronoActivity.this, CronogramaActivity.class);
-                                        //startActivity(objLogin);
-                                        //CriarCronoActivity.this.finish();
-                                    }
-                                });
-                                builder.create().show();
-                            } else {
-                                utils.showAlert("Algo deu errado :(", getContext());
-                            }
+                                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                                fragmentTransaction.replace(R.id.fragment_container, new CronogramaFragment()).commit();
+                            });
+                            builder.create().show();
+                        } else {
+                            utils.showAlert("Algo deu errado :(", getContext());
                         }
                     });
         }
     }
 
-    private boolean validarCampos() {
-        boolean retorno = false;
+    private boolean validateFields() {
+        boolean isValid = false;
 
         if (!TextUtils.isEmpty(datax) && !TextUtils.isEmpty(horax)) {
-            retorno = true;
+            isValid = true;
         } else {
             utils.showAlert("Preencha todos os campos!", getContext());
         }
-        return retorno;
+
+        return isValid;
     }
 }
