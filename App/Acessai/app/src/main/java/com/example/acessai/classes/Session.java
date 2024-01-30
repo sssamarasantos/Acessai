@@ -2,16 +2,11 @@ package com.example.acessai.classes;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
-import androidx.appcompat.app.AlertDialog;
-
-import com.example.acessai.activitys.CadastroActivity;
 import com.example.acessai.activitys.HomeActivity;
 import com.example.acessai.activitys.LoginActivity;
-import com.koushikdutta.ion.builder.Builders;
 
 import java.util.HashMap;
 
@@ -21,44 +16,40 @@ public class Session {
     Context context;
 
     private static final String LOGIN = "Login";
-    public static  final String KEY_EMAIL = "email";
-    public static  final String KEY_SENHA = "senha";
+    public static final String KEY_EMAIL = "email";
+    public static final String KEY_PASSWORD = "password";
 
     @SuppressLint("CommitPrefEdits")
-    public Session(Context con){
-        this.context = con;
-        preferences = con.getSharedPreferences("loginSessao", Context.MODE_PRIVATE);
+    public Session(Context context){
+        this.context = context;
+        preferences = context.getSharedPreferences("loginSession", Context.MODE_PRIVATE);
         editor = preferences.edit();
     }
 
-    public void criarSessao(String email, String senha){
+    public void createSession(String email, String password){
         editor.putBoolean(LOGIN, true);
         editor.putString(KEY_EMAIL, email);
-        editor.putString(KEY_SENHA, senha);
+        editor.putString(KEY_PASSWORD, password);
         editor.commit();
     }
 
-    public boolean checarLogin(){
-        if (preferences.getBoolean(LOGIN, false)){
-            return true;
-        } else {
-            return false;
-        }
+    public boolean isLoggedIn(){
+        return preferences.getBoolean(LOGIN, false);
     }
 
     public HashMap<String, String> getUserDetails(){
-        HashMap<String, String> usuario = new HashMap<>();
-        usuario.put(KEY_EMAIL, preferences.getString(KEY_EMAIL, null));
-        usuario.put(KEY_SENHA, preferences.getString(KEY_SENHA, null));
+        HashMap<String, String> user = new HashMap<>();
+        user.put(KEY_EMAIL, preferences.getString(KEY_EMAIL, null));
+        user.put(KEY_PASSWORD, preferences.getString(KEY_PASSWORD, null));
 
-        return usuario;
+        return user;
     }
 
     public void logout(){
         editor.clear();
         editor.commit();
-        Intent y = new Intent(context, LoginActivity.class);
-        context.startActivity(y);
+        Intent intent = new Intent(context, LoginActivity.class);
+        context.startActivity(intent);
         ((HomeActivity) context).finish();
     }
 }

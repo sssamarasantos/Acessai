@@ -20,7 +20,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.acessai.R;
-import com.example.acessai.classes.Metodos;
+import com.example.acessai.classes.Utils;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
@@ -44,7 +44,7 @@ public class AssuntoFragment extends Fragment {
     //private String host = "http://192.168.15.9/tcc/";
     private String url = "", ret="", disc;
     public static String iAssunto, nAssunto;
-    Metodos metodo = new Metodos();
+    Utils utils = new Utils();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -64,7 +64,7 @@ public class AssuntoFragment extends Fragment {
         listaId = new ArrayList<String>();
 
         listarAssuntos();
-        metodo.chamarLibras(frameLibras, libras, HomeFragment.assistenciaAluno);
+        utils.showLibras(frameLibras, libras, HomeFragment.assistenciaAluno);
 
         listaAulas.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -89,7 +89,7 @@ public class AssuntoFragment extends Fragment {
                     frameLibras.setVisibility(View.VISIBLE);
                     //video
                     String videoPath = "android.resource://" + context.getPackageName() + "/" + R.raw.video_demonstrar;
-                    metodo.video(videoLibras, videoPath);
+                    utils.showVideo(videoLibras, videoPath);
                 } else {
                     libras.setText("");
                     frameLibras.setVisibility(View.INVISIBLE);

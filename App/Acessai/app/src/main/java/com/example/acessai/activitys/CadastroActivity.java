@@ -1,18 +1,12 @@
 package com.example.acessai.activitys;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.ActivityNotFoundException;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -20,9 +14,13 @@ import android.widget.RadioButton;
 import android.widget.ToggleButton;
 import android.widget.VideoView;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.acessai.R;
-import com.example.acessai.classes.Metodos;
-import com.example.acessai.fragments.HomeFragment;
+import com.example.acessai.classes.Host;
+import com.example.acessai.classes.Utils;
 import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
@@ -36,18 +34,15 @@ public class CadastroActivity extends AppCompatActivity {
     private RadioButton auditiva, visual, cognitiva, nenhuma;
     private Button cadastro;
     private ImageButton falar;
-    private FrameLayout frameLogin, frameLibras;
+    private FrameLayout frameLibras;
     private ToggleButton libras;
     private VideoView videoLibras;
-    private String assistencia = "", mensagem = "";
-    private String host = "http://acessai1.000webhostapp.com/app/";
-    //private String host = "http://192.168.15.9/tcc/";
-    private String url = "", ret = "";
-    public String loginx, nomex, senhax, confSenhax;
-    boolean dadosValidados;
+    private String assistencia = "";
+    private String loginx, nomex, senhax, confSenhax;
+    private String HOST = new Host().getHost();
     private final int ID_TEXTO_PARA_VOZ = 100;
 
-    Metodos metodo = new Metodos();
+    Utils utils = new Utils();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +50,6 @@ public class CadastroActivity extends AppCompatActivity {
         setContentView(R.layout.activity_cadastro);
 
         videoLibras = (VideoView) findViewById(R.id.videoLibras);
-        frameLogin = (FrameLayout) findViewById(R.id.librasBotao);
         frameLibras = (FrameLayout) findViewById(R.id.frameLibras);
         libras = (ToggleButton) findViewById(R.id.tbLibras);
         falar = (ImageButton) findViewById(R.id.btnImgFalar);
@@ -72,36 +66,27 @@ public class CadastroActivity extends AppCompatActivity {
         falar.setEnabled(false);
 
         //evento de foco nome
-        nome.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                campo = nome;
-                falar.setEnabled(true);
-            }
+        nome.setOnFocusChangeListener((v, hasFocus) -> {
+            campo = nome;
+            falar.setEnabled(true);
         });
+
         //evento de foco login
-        login.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                campo = login;
-                falar.setEnabled(true);
-            }
+        login.setOnFocusChangeListener((v, hasFocus) -> {
+            campo = login;
+            falar.setEnabled(true);
         });
+
         //evento de foco senha
-        senha.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                campo = senha;
-                falar.setEnabled(true);
-            }
+        senha.setOnFocusChangeListener((v, hasFocus) -> {
+            campo = senha;
+            falar.setEnabled(true);
         });
+
         // evento de foco confirmar senha
-        confSenha.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                campo = confSenha;
-                falar.setEnabled(true);
-            }
+        confSenha.setOnFocusChangeListener((v, hasFocus) -> {
+            campo = confSenha;
+            falar.setEnabled(true);
         });
         //evento botao cadastro
         cadastro.setOnClickListener(new View.OnClickListener() {
@@ -112,48 +97,42 @@ public class CadastroActivity extends AppCompatActivity {
                 senhax = senha.getText().toString();
                 confSenhax = confSenha.getText().toString();
 
-                cadastrar();
+                signUp();
             }
         });
 
         //evento digitação por voz
-        falar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent iVoz = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-                iVoz.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-                iVoz.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
-                iVoz.putExtra(RecognizerIntent.EXTRA_PROMPT, "Fale agora");
+        falar.setOnClickListener(v -> {
+            Intent intentVoz = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+            intentVoz.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+            intentVoz.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+            intentVoz.putExtra(RecognizerIntent.EXTRA_PROMPT, "Fale agora");
 
-                try {
-                    startActivityForResult(iVoz, ID_TEXTO_PARA_VOZ);
-                } catch (ActivityNotFoundException a){
-                    metodo.alerta("Dispositivo não suporta!", CadastroActivity.this);
-                }
+            try {
+                startActivityForResult(intentVoz, ID_TEXTO_PARA_VOZ);
+            } catch (ActivityNotFoundException a){
+                utils.showAlert("Dispositivo não suporta!", CadastroActivity.this);
             }
         });
 
         frameLibras.setVisibility(View.INVISIBLE);
 
         //evento mostrar/ocultar video libras
-        libras.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    libras.setText("");
-                    frameLibras.setVisibility(View.VISIBLE);
-                    //video
-                    String videoPath = "android.resource://" + getPackageName() + "/" + R.raw.video_tela_cadastro;
-                    metodo.video(videoLibras, videoPath);
-                } else {
-                    libras.setText("");
-                    frameLibras.setVisibility(View.INVISIBLE);
-                }
+        libras.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                libras.setText("");
+                frameLibras.setVisibility(View.VISIBLE);
+                //video
+                String videoPath = "android.resource://" + getPackageName() + "/" + R.raw.video_tela_cadastro;
+                utils.showVideo(videoLibras, videoPath);
+            } else {
+                libras.setText("");
+                frameLibras.setVisibility(View.INVISIBLE);
             }
         });
     }
 
-    private void cadastrar(){
+    private void signUp(){
 
         if (visual.isChecked()) {
             assistencia = "Visual";
@@ -168,10 +147,10 @@ public class CadastroActivity extends AppCompatActivity {
             assistencia = "Nenhuma";
         }
 
-        dadosValidados = validarCampos();
+        boolean isValidData = validateFields();
 
-        if (dadosValidados) {
-            url = host + "/cadastrar.php";
+        if (isValidData) {
+            String url = HOST + "/cadastrar.php";
             Ion.with(CadastroActivity.this)
                     .load(url)
                     .setBodyParameter("login", loginx)
@@ -182,23 +161,20 @@ public class CadastroActivity extends AppCompatActivity {
                     .setCallback(new FutureCallback<JsonObject>() {
                         @Override
                         public void onCompleted(Exception e, JsonObject result) {
-                            ret = result.get("status").getAsString();
-                            if (ret.equals("ok")) {
+                            String status = result.get("status").getAsString();
+                            if (status.equals("ok")) {
                                 //alert
                                 AlertDialog.Builder builder = new AlertDialog.Builder(CadastroActivity.this);
                                 builder.setMessage("Usuário cadastrado com sucesso!");
                                 builder.setTitle("Aviso");
-                                builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        Intent objEsquece = new Intent(CadastroActivity.this, LoginActivity.class);
-                                        startActivity(objEsquece);
-                                        CadastroActivity.this.finish();
-                                    }
+                                builder.setNeutralButton("OK", (dialog, which) -> {
+                                    Intent objEsquece = new Intent(CadastroActivity.this, LoginActivity.class);
+                                    startActivity(objEsquece);
+                                    CadastroActivity.this.finish();
                                 });
                                 builder.create().show();
                             } else {
-                                metodo.alerta("Algo deu errado :(", CadastroActivity.this);
+                                utils.showAlert("Algo deu errado :(", CadastroActivity.this);
                                 login.setText("");
                                 nome.setText("");
                                 senha.setText("");
@@ -212,9 +188,10 @@ public class CadastroActivity extends AppCompatActivity {
                     });
         }
     }
+
     //verifica a validade dos campos
-    private boolean validarCampos() {
-        boolean retorno = false;
+    private boolean validateFields() {
+        boolean isValid = false;
 
         if (!TextUtils.isEmpty(loginx)
                 && !TextUtils.isEmpty(nomex)
@@ -224,54 +201,53 @@ public class CadastroActivity extends AppCompatActivity {
             if (android.util.Patterns.EMAIL_ADDRESS.matcher(loginx).matches()){
                 if (senhax.length() >= 6){
                     if (senhax.equals(confSenhax)) {
-                        retorno = true;
+                        isValid = true;
                     } else {
-                        metodo.alerta("Senhas não conferem!", CadastroActivity.this);
+                        utils.showAlert("Senhas não conferem!", CadastroActivity.this);
                         senha.setText("");
                         confSenha.setText("");
                         senha.setError("*");
                         senha.requestFocus();
                     }
                 } else {
-                    metodo.alerta("Senha muito curta!", CadastroActivity.this);
+                    utils.showAlert("Senha muito curta!", CadastroActivity.this);
                     senha.setText("");
                     confSenha.setText("");
                     senha.setError("*");
                     senha.requestFocus();
                 }
             } else {
-                metodo.alerta("Formato inválido!", CadastroActivity.this);
+                utils.showAlert("Formato inválido!", CadastroActivity.this);
                 login.setText("");
                 login.setError("*");
                 login.requestFocus();
             }
         } else {
-            metodo.alerta("Preencha todos os campos!", CadastroActivity.this);
+            utils.showAlert("Preencha todos os campos!", CadastroActivity.this);
         }
-        return retorno;
+        return isValid;
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        switch (requestCode){
-            case ID_TEXTO_PARA_VOZ:
-                if (resultCode == RESULT_OK && null != data){
-                    ArrayList<String> resultado = data
-                            .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-                    String ditado = resultado.get(0);
-                    campo.setText(ditado);
-                }
-                break;
+        if (requestCode == ID_TEXTO_PARA_VOZ) {
+            if (resultCode == RESULT_OK && null != data) {
+                ArrayList<String> result = data
+                        .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                assert result != null;
+                String saying = result.get(0);
+                campo.setText(saying);
+            }
         }
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Intent objCadastrar = new Intent(CadastroActivity.this, LoginActivity.class);
-        startActivity(objCadastrar);
+        Intent intent = new Intent(CadastroActivity.this, LoginActivity.class);
+        startActivity(intent);
         CadastroActivity.this.finish();
     }
 }

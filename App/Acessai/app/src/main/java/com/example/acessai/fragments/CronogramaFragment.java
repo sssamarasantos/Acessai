@@ -1,7 +1,6 @@
 package com.example.acessai.fragments;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,7 +21,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.example.acessai.R;
 import com.example.acessai.adapters.ListaAdapterCrono;
 import com.example.acessai.classes.Cronograma;
-import com.example.acessai.classes.Metodos;
+import com.example.acessai.classes.Utils;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -47,7 +46,7 @@ public class CronogramaFragment extends Fragment {
     public static String iVideoaula, nVideoaula;
     private String host = "http://acessai1.000webhostapp.com/app/";
     private String url = "", ret="", s="";
-    Metodos metodo = new Metodos();
+    Utils utils = new Utils();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -97,7 +96,7 @@ public class CronogramaFragment extends Fragment {
                 //startActivity(trocar);
             }
         });
-        metodo.chamarLibras(frameLibras, libras, HomeFragment.assistenciaAluno);
+        utils.showLibras(frameLibras, libras, HomeFragment.assistenciaAluno);
 
         libras.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -107,7 +106,7 @@ public class CronogramaFragment extends Fragment {
                     frameLibras.setVisibility(View.VISIBLE);
                     //video
                     String videoPath = "android.resource://" + context.getPackageName() + "/" + R.raw.video_demonstrar;
-                    metodo.video(videoLibras, videoPath);
+                    utils.showVideo(videoLibras, videoPath);
                 } else {
                     libras.setText("");
                     frameLibras.setVisibility(View.INVISIBLE);

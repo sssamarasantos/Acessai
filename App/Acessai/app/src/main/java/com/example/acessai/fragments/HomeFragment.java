@@ -17,7 +17,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.acessai.R;
-import com.example.acessai.classes.Metodos;
+import com.example.acessai.classes.Utils;
 import com.example.acessai.classes.Session;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -38,7 +38,7 @@ public class HomeFragment extends Fragment {
     public static String idAluno, assistenciaAluno;
     Session session;
     //instancia do metodo Metodos
-    Metodos metodo = new Metodos();
+    Utils utils = new Utils();
     //classe responsavel por criar o fragmento
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -103,7 +103,7 @@ public class HomeFragment extends Fragment {
                     frameLibras.setVisibility(View.VISIBLE);
                     //video
                     String videoPath = "android.resource://" + context.getPackageName() + "/" + R.raw.video_demonstrar;
-                    metodo.video(videoLibras, videoPath);
+                    utils.showVideo(videoLibras, videoPath);
                 } else {
                     libras.setText("");
                     frameLibras.setVisibility(View.INVISIBLE);
@@ -122,13 +122,13 @@ public class HomeFragment extends Fragment {
                 .setCallback(new FutureCallback<JsonArray>() {
                     @Override
                     public void onCompleted(Exception e, JsonArray result) {
-			//recebe os valores e atribui para cada variavel
+			            //recebe os valores e atribui para cada variavel
                         for (int i = 0; i < result.size(); i++){
                             JsonObject ret = result.get(i).getAsJsonObject();
                             idAluno = ret.get("ID_ALUNO").getAsString();
                             assistenciaAluno = ret.get("ASSISTENCIA_ALUNO").getAsString();
                         }
-                        metodo.chamarLibras(frameLibras, libras, assistenciaAluno);
+                        utils.showLibras(frameLibras, libras, assistenciaAluno);
                     }
                 });
     }

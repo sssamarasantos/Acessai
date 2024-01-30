@@ -16,7 +16,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.acessai.R;
-import com.example.acessai.classes.Metodos;
+import com.example.acessai.classes.Utils;
 import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
@@ -31,7 +31,7 @@ public class DisciplinaFragment extends Fragment {
     private String host = "http://acessai1.000webhostapp.com/app/";
     //private String host = "http://192.168.15.9/tcc/";
     private String url = "", ret="";
-    Metodos metodo = new Metodos();
+    Utils utils = new Utils();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -142,7 +142,7 @@ public class DisciplinaFragment extends Fragment {
             }
         });
 
-        metodo.chamarLibras(frameLibras, libras, HomeFragment.assistenciaAluno);
+        utils.showLibras(frameLibras, libras, HomeFragment.assistenciaAluno);
 
         libras.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -152,7 +152,7 @@ public class DisciplinaFragment extends Fragment {
                     frameLibras.setVisibility(View.VISIBLE);
                     //video
                     String videoPath = "android.resource://" + context.getPackageName() + "/" + R.raw.video_demonstrar;
-                    metodo.video(videoLibras, videoPath);
+                    utils.showVideo(videoLibras, videoPath);
                 } else {
                     libras.setText("");
                     frameLibras.setVisibility(View.INVISIBLE);
@@ -181,7 +181,7 @@ public class DisciplinaFragment extends Fragment {
                             //Intent objIt = new Intent(DisciplinaActivity.this, AssuntoActivity.class);
                             //startActivity(objIt);
                         } else {
-                            metodo.alerta("Nenhuma aula adicionada", getContext());
+                            utils.showAlert("Nenhuma aula adicionada", getContext());
                         }
                     }
                 });

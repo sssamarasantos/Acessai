@@ -19,7 +19,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.acessai.R;
 import com.example.acessai.adapters.ListAdapterAulas;
-import com.example.acessai.classes.Metodos;
+import com.example.acessai.classes.Utils;
 import com.example.acessai.classes.Videoaulas;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -42,7 +42,7 @@ public class AulasFragment extends Fragment {
     private String host = "http://acessai1.000webhostapp.com/app/";
     private String url = "", ret = "";
     public static String nVideoaula, iVideoaula;
-    Metodos metodo = new Metodos();
+    Utils utils = new Utils();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -60,7 +60,7 @@ public class AulasFragment extends Fragment {
         idVideoaula = new ArrayList<String>();
 
         listar(context);
-        metodo.chamarLibras(frameLibras, libras, HomeFragment.assistenciaAluno);
+        utils.showLibras(frameLibras, libras, HomeFragment.assistenciaAluno);
 
         lVideoaulas.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -90,7 +90,7 @@ public class AulasFragment extends Fragment {
                     frameLibras.setVisibility(View.VISIBLE);
                     //video
                     String videoPath = "android.resource://" + context.getPackageName() + "/" + R.raw.video_demonstrar;
-                    metodo.video(videoLibras, videoPath);
+                    utils.showVideo(videoLibras, videoPath);
                 } else {
                     libras.setText("");
                     frameLibras.setVisibility(View.INVISIBLE);

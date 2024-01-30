@@ -27,7 +27,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.acessai.R;
-import com.example.acessai.classes.Metodos;
+import com.example.acessai.classes.Utils;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
@@ -51,7 +51,7 @@ public class CriarCronoFragment extends Fragment {
     private ArrayAdapter<String> adaptador;
     private String host = "http://acessai1.000webhostapp.com/app/";
     private String url = "", ret = "", videosx, horax, datax;
-    Metodos metodo = new Metodos();
+    Utils utils = new Utils();
     boolean dadosValidados;
     int idcrono;
 
@@ -88,7 +88,7 @@ public class CriarCronoFragment extends Fragment {
         }
 
         chamarVideoaulas(context);
-        metodo.chamarLibras(frameLibras, libras, HomeFragment.assistenciaAluno);
+        utils.showLibras(frameLibras, libras, HomeFragment.assistenciaAluno);
 
         criar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -155,7 +155,7 @@ public class CriarCronoFragment extends Fragment {
                     frameLibras.setVisibility(View.VISIBLE);
                     //video
                     String videoPath = "android.resource://" + context.getPackageName() + "/" + R.raw.video_demonstrar;
-                    metodo.video(videoLibras, videoPath);
+                    utils.showVideo(videoLibras, videoPath);
                 } else {
                     libras.setText("");
                     frameLibras.setVisibility(View.INVISIBLE);
@@ -221,7 +221,7 @@ public class CriarCronoFragment extends Fragment {
                                 });
                                 builder.create().show();
                             } else {
-                                metodo.alerta("Algo deu errado :(", getContext());
+                                utils.showAlert("Algo deu errado :(", getContext());
                                 data.setText("");
                                 hora.setText("");
                             }
@@ -266,7 +266,7 @@ public class CriarCronoFragment extends Fragment {
                                 });
                                 builder.create().show();
                             } else {
-                                metodo.alerta("Algo deu errado :(", getContext());
+                                utils.showAlert("Algo deu errado :(", getContext());
                             }
                         }
                     });
@@ -279,7 +279,7 @@ public class CriarCronoFragment extends Fragment {
         if (!TextUtils.isEmpty(datax) && !TextUtils.isEmpty(horax)) {
             retorno = true;
         } else {
-            metodo.alerta("Preencha todos os campos!", getContext());
+            utils.showAlert("Preencha todos os campos!", getContext());
         }
         return retorno;
     }

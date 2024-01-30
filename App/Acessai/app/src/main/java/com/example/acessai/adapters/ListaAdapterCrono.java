@@ -4,29 +4,21 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
-import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.acessai.R;
 import com.example.acessai.activitys.HomeActivity;
-import com.example.acessai.activitys.MainActivity;
 import com.example.acessai.classes.Cronograma;
-import com.example.acessai.classes.Metodos;
+import com.example.acessai.classes.Utils;
 import com.example.acessai.fragments.CriarCronoFragment;
 import com.example.acessai.fragments.CronogramaFragment;
-import com.example.acessai.fragments.VideoaulaFragment;
 import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
@@ -41,7 +33,7 @@ public class ListaAdapterCrono extends BaseAdapter {
     //private String host = "http://192.168.15.9/tcc/";
     private String url = "", ret = "";
     boolean dadosValidados;
-    Metodos metodo = new Metodos();
+    Utils utils = new Utils();
 
     public ListaAdapterCrono(Context con, List<Cronograma> cronograma) {
         this.context = con;
@@ -144,7 +136,7 @@ public class ListaAdapterCrono extends BaseAdapter {
                             });
                             builder.create().show();
                         } else {
-                            metodo.alerta("Algo deu errado :(", context);
+                            utils.showAlert("Algo deu errado :(", context);
                         }
                     }
                 });

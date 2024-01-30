@@ -16,7 +16,7 @@ import android.widget.VideoView;
 import androidx.fragment.app.Fragment;
 
 import com.example.acessai.R;
-import com.example.acessai.classes.Metodos;
+import com.example.acessai.classes.Utils;
 
 public class InfosFragment extends Fragment {
 
@@ -24,7 +24,7 @@ public class InfosFragment extends Fragment {
     private VideoView videoLibras;
     private FrameLayout frameLogin, frameLibras;
     private ToggleButton libras;
-    Metodos metodo = new Metodos();
+    Utils utils = new Utils();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -57,7 +57,7 @@ public class InfosFragment extends Fragment {
             }
         });
 
-        metodo.chamarLibras(frameLibras, libras, HomeFragment.assistenciaAluno);
+        utils.showLibras(frameLibras, libras, HomeFragment.assistenciaAluno);
 
         libras.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -67,7 +67,7 @@ public class InfosFragment extends Fragment {
                     frameLibras.setVisibility(View.VISIBLE);
                     //video
                     String videoPath = "android.resource://" + context.getPackageName() + "/" + R.raw.video_demonstrar;
-                    metodo.video(videoLibras, videoPath);
+                    utils.showVideo(videoLibras, videoPath);
                 } else {
                     libras.setText("");
                     frameLibras.setVisibility(View.INVISIBLE);

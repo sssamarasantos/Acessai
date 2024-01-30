@@ -31,7 +31,7 @@ import androidx.fragment.app.Fragment;
 import com.example.acessai.R;
 import com.example.acessai.adapters.ListAdapterDuvidas;
 import com.example.acessai.classes.Duvidas;
-import com.example.acessai.classes.Metodos;
+import com.example.acessai.classes.Utils;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
@@ -63,7 +63,7 @@ public class VideoaulaFragment extends Fragment {
     private String host = "http://acessai1.000webhostapp.com/app/";
     private final int ID_TEXTO_PARA_VOZ = 100;
     boolean dadosValidados;
-    Metodos metodo = new Metodos();
+    Utils utils = new Utils();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -102,7 +102,7 @@ public class VideoaulaFragment extends Fragment {
         chamarVideo(context);
         verificarItem();
         exibirComentarios(context);
-        metodo.chamarLibras(frameLibras, libras, HomeFragment.assistenciaAluno);
+        utils.showLibras(frameLibras, libras, HomeFragment.assistenciaAluno);
 
         visto.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -165,12 +165,12 @@ public class VideoaulaFragment extends Fragment {
                 try {
                     startActivityForResult(iVoz, ID_TEXTO_PARA_VOZ);
                 } catch (ActivityNotFoundException a){
-                    metodo.alerta("Dispositivo não suporta!", context);
+                    utils.showAlert("Dispositivo não suporta!", context);
                 }
             }
         });
 
-        metodo.chamarLibras(frameLibras, libras, HomeFragment.assistenciaAluno);
+        utils.showLibras(frameLibras, libras, HomeFragment.assistenciaAluno);
 
         libras.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -181,7 +181,7 @@ public class VideoaulaFragment extends Fragment {
                     frameLibras.setVisibility(View.VISIBLE);
                     //video
                     String videoPath = "android.resource://" + context.getPackageName() + "/" + R.raw.video_demonstrar;
-                    metodo.video(videoLibras, videoPath);
+                    utils.showVideo(videoLibras, videoPath);
                 } else {
                     libras.setText("");
                     //libras.setBackgroundResource(R.drawable.teste);
@@ -381,10 +381,10 @@ public class VideoaulaFragment extends Fragment {
             if (comentar.getText().toString().length()<=100) {
                 retorno = true;
             } else {
-                metodo.alerta("Texto muito longo", getContext());
+                utils.showAlert("Texto muito longo", getContext());
             }
         } else {
-            metodo.alerta("Campo vazio!", getContext());
+            utils.showAlert("Campo vazio!", getContext());
         }
         return retorno;
     }

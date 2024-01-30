@@ -19,11 +19,9 @@ import android.widget.VideoView;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.example.acessai.R;
-import com.example.acessai.classes.Metodos;
+import com.example.acessai.classes.Utils;
 import com.example.acessai.classes.Session;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -52,7 +50,7 @@ public class UsuarioFragment extends Fragment {
     Session session;
     boolean clique = false;
 
-    Metodos metodo = new Metodos();
+    Utils utils = new Utils();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -156,7 +154,7 @@ public class UsuarioFragment extends Fragment {
                 try {
                     startActivityForResult(iVoz, ID_TEXTO_PARA_VOZ);
                 } catch (ActivityNotFoundException a){
-                    metodo.alerta("Dispositivo não suporta!", context);
+                    utils.showAlert("Dispositivo não suporta!", context);
                 }
             }
         });
@@ -169,7 +167,7 @@ public class UsuarioFragment extends Fragment {
                     frameLibras.setVisibility(View.VISIBLE);
                     //video
                     String videoPath = "android.resource://" + context.getPackageName() + "/" + R.raw.video_demonstrar;
-                    metodo.video(videoLibras, videoPath);
+                    utils.showVideo(videoLibras, videoPath);
                 } else {
                     libras.setText("");
                     frameLibras.setVisibility(View.INVISIBLE);
@@ -198,7 +196,7 @@ public class UsuarioFragment extends Fragment {
                             senhau = ret.get("SENHA_ALUNO").getAsString();
                             assistenciau = ret.get("ASSISTENCIA_ALUNO").getAsString();
                         }
-                        metodo.chamarLibras(frameLibras, libras, assistenciau);
+                        utils.showLibras(frameLibras, libras, assistenciau);
                         nome.setText(nomeu);
                         email.setText(emailu);
                         senha.setText(senhau);
@@ -226,7 +224,7 @@ public class UsuarioFragment extends Fragment {
                             ret = result.get("status").getAsString();
                             if (ret.equals("ok")) {
 
-                                metodo.alerta("Alteração feita com sucesso!", getContext());
+                                utils.showAlert("Alteração feita com sucesso!", getContext());
 
                                 chamarUsuario(email.getText().toString());
 
@@ -236,7 +234,7 @@ public class UsuarioFragment extends Fragment {
                                 assistencia.setEnabled(false);
                                 falar.setEnabled(false);
                             } else {
-                                metodo.alerta("Algo deu errado :(", getContext());
+                                utils.showAlert("Algo deu errado :(", getContext());
                             }
                         }
                     });
@@ -253,12 +251,12 @@ public class UsuarioFragment extends Fragment {
             if (android.util.Patterns.EMAIL_ADDRESS.matcher(email.getText().toString()).matches()){
                 retorno = true;
             } else {
-                metodo.alerta("Formato inválido!", getContext());
+                utils.showAlert("Formato inválido!", getContext());
                 email.setError("*");
                 email.requestFocus();
             }
         } else {
-            metodo.alerta("Preencha todos os campos!", getActivity());
+            utils.showAlert("Preencha todos os campos!", getActivity());
         }
         return retorno;
     }
