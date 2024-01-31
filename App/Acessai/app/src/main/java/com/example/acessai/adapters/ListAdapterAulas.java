@@ -20,8 +20,8 @@ public class ListAdapterAulas extends BaseAdapter {
     private Context context;
     private List<Videoaulas> videoaulas;
 
-    public ListAdapterAulas(Context con, List<Videoaulas> videoaulas) {
-        this.context = con;
+    public ListAdapterAulas(Context context, List<Videoaulas> videoaulas) {
+        this.context = context;
         this.videoaulas = videoaulas;
     }
 
