@@ -1,6 +1,6 @@
 <?php
-//$conexao = mysqli_connect("localhost","root", "", "tcc");
-$conexao = mysqli_connect("localhost","id15054857_adms", "Tcc_1234_banco", "id15054857_acessai");
+include('credenciais.php');
+$conexao = $conexao;
 
 $msg_duvida = $_POST["msg_duvida"];
 $id_videoaula = $_POST["id_videoaula"];

@@ -15,8 +15,8 @@ import java.util.List;
 //classe do adapter
 public class ListAdapterDuvidas extends BaseAdapter {
     //declaracao das variaveis
-    private List<Duvidas> duvidas;
-    private Context context;
+    private final List<Duvidas> duvidas;
+    private final Context context;
     //metodo construtor
     public ListAdapterDuvidas(Context context, List<Duvidas> duvidas) {
 	//atribui o contexto

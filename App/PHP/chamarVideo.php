@@ -1,7 +1,6 @@
 <?php
-//$conexao = mysqli_connect("localhost","root", "", "tcc");
-//conexao com o banco de dados
-$conexao = mysqli_connect("localhost","id15054857_adms", "Tcc_1234_banco", "id15054857_acessai");
+include('credenciais.php');
+$conexao = $conexao;
 //variavel recebe o valor do aplicativo via post
 $id_videoaula = $_POST["id_videoaula"];
 //comando usado no banco de dados

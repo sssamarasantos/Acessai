@@ -1,9 +1,5 @@
 package com.example.acessai.activitys;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -19,9 +15,13 @@ import android.widget.ImageButton;
 import android.widget.ToggleButton;
 import android.widget.VideoView;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.acessai.R;
-import com.example.acessai.classes.Metodos;
-import com.example.acessai.fragments.HomeFragment;
+import com.example.acessai.classes.Host;
+import com.example.acessai.classes.Utils;
 import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
@@ -35,16 +35,12 @@ public class EsqueceuSenhaActivity extends AppCompatActivity {
     private Button enviar;
     private ImageButton falar;
     private VideoView videoLibras;
-    private FrameLayout frameLogin, frameLibras;
+    private FrameLayout frameLibras;
     private ToggleButton libras;
-    private String host = "http://acessai.000webhostapp.com/app/";
-    //private String host = "http://192.168.15.9/tcc/";
-    private String url = "", ret = "";
-    private String emailx;
-    private boolean dadosValidados;
+    private final String HOST_APP = new Host().getUrlApp();
     private final int ID_TEXTO_PARA_VOZ = 100;
 
-    Metodos metodo = new Metodos();
+    Utils utils = new Utils();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +49,6 @@ public class EsqueceuSenhaActivity extends AppCompatActivity {
 
         falar = (ImageButton) findViewById(R.id.btnImgFalar);
         videoLibras = (VideoView) findViewById(R.id.videoLibras);
-        frameLogin = (FrameLayout) findViewById(R.id.librasBotao);
         frameLibras = (FrameLayout) findViewById(R.id.frameLibras);
         libras = (ToggleButton) findViewById(R.id.tbLibras);
         email = (EditText) findViewById(R.id.txtEmailE);
@@ -63,8 +58,7 @@ public class EsqueceuSenhaActivity extends AppCompatActivity {
         enviar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                emailx = email.getText().toString();
-                esqueceuSenha();
+                forgotPassword(email.getText().toString());
             }
         });
 
@@ -79,7 +73,7 @@ public class EsqueceuSenhaActivity extends AppCompatActivity {
                 try {
                     startActivityForResult(iVoz, ID_TEXTO_PARA_VOZ);
                 } catch (ActivityNotFoundException a){
-                    metodo.alerta("Dispositivo não suporta!", EsqueceuSenhaActivity.this);
+                    utils.showAlert("Dispositivo não suporta!", EsqueceuSenhaActivity.this);
                 }
             }
         });
@@ -94,7 +88,7 @@ public class EsqueceuSenhaActivity extends AppCompatActivity {
                     frameLibras.setVisibility(View.VISIBLE);
                     //video
                     String videoPath = "android.resource://" + getPackageName() + "/" + R.raw.video_tela_esqueceu;
-                    metodo.video(videoLibras, videoPath);
+                    utils.showVideo(videoLibras, videoPath);
                 } else {
                     libras.setText("");
                     frameLibras.setVisibility(View.INVISIBLE);
@@ -103,85 +97,85 @@ public class EsqueceuSenhaActivity extends AppCompatActivity {
         });
     }
 
-    private void esqueceuSenha() {
-        dadosValidados = validarCampos();
-        if (dadosValidados) {
-            url = host + "/recuperarSenha.php";
+    private void forgotPassword(String emailf) {
+        boolean isValidData = validateFields(emailf);
+        if (isValidData) {
+            String url = HOST_APP + "/recuperarSenha.php";
             Ion.with(EsqueceuSenhaActivity.this)
                     .load(url)
-                    .setBodyParameter("email", emailx)
+                    .setBodyParameter("email", emailf)
                     .asJsonObject()
                     .setCallback(new FutureCallback<JsonObject>() {
                         @Override
                         public void onCompleted(Exception e, JsonObject result) {
-                            ret = result.get("status").getAsString();
-                            if (ret.equals("ok")) {
-                                AlertDialog.Builder builder = new AlertDialog.Builder(EsqueceuSenhaActivity.this);
-                                builder.setMessage("Email enviado com sucesso!");
-                                builder.setTitle("Aviso");
-                                builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        Intent objEsquece = new Intent(EsqueceuSenhaActivity.this, LoginActivity.class);
-                                        startActivity(objEsquece);
-                                        EsqueceuSenhaActivity.this.finish();
-                                    }
-                                });
-                                builder.create().show();
-                            }
-                            if (ret.equals("vazio")){
-                                metodo.alerta("Email não cadastrado :(", EsqueceuSenhaActivity.this);
-                            }
-                            if (ret.equals("erro")){
-                                metodo.alerta("Algo deu errado :(", EsqueceuSenhaActivity.this);
-                                email.setText("");
+                            String status = result.get("status").getAsString();
+                            switch (status) {
+                                case "ok":
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(EsqueceuSenhaActivity.this);
+                                    builder.setMessage("Email enviado com sucesso!");
+                                    builder.setTitle("Aviso");
+                                    builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            Intent objEsquece = new Intent(EsqueceuSenhaActivity.this, LoginActivity.class);
+                                            startActivity(objEsquece);
+                                            EsqueceuSenhaActivity.this.finish();
+                                        }
+                                    });
+                                    builder.create().show();
+                                    break;
+                                case "vazio":
+                                    utils.showAlert("Email não cadastrado :(", EsqueceuSenhaActivity.this);
+                                    break;
+                                case "erro":
+                                    utils.showAlert("Algo deu errado :(", EsqueceuSenhaActivity.this);
+                                    email.setText("");
+                                    break;
                             }
                         }
                     });
         }
     }
-    private boolean validarCampos() {
-        boolean retorno = false;
+    private boolean validateFields(String emailf) {
+        boolean isValid = false;
 
-        if (!TextUtils.isEmpty(emailx)) {
-            if (android.util.Patterns.EMAIL_ADDRESS.matcher(emailx).matches()) {
-                retorno = true;
+        if (!TextUtils.isEmpty(emailf)) {
+            if (android.util.Patterns.EMAIL_ADDRESS.matcher(emailf).matches()) {
+                isValid = true;
             } else {
-                metodo.alerta("Formato inválido!", EsqueceuSenhaActivity.this);
+                utils.showAlert("Formato inválido!", EsqueceuSenhaActivity.this);
                 email.setText("");
                 email.setError("*");
                 email.requestFocus();
             }
         } else {
-            metodo.alerta("Preencha todos os campos!", EsqueceuSenhaActivity.this);
+            utils.showAlert("Preencha todos os campos!", EsqueceuSenhaActivity.this);
             email.setError("*");
             email.requestFocus();
         }
-        return retorno;
+        return isValid;
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        switch (requestCode){
-            case ID_TEXTO_PARA_VOZ:
-                if (resultCode == RESULT_OK && null != data){
-                    ArrayList<String> resultado = data
-                            .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-                    String ditado = resultado.get(0);
-
-                    email.setText(ditado);
-                }
-                break;
+        if (requestCode == ID_TEXTO_PARA_VOZ) {
+                    if (resultCode == RESULT_OK && null != data) {
+                        ArrayList<String> result = data
+                                .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                        assert result != null;
+                String saying = result.get(0);
+                email.setText(saying);
+            }
         }
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Intent objEsquece = new Intent(EsqueceuSenhaActivity.this, LoginActivity.class);
-        startActivity(objEsquece);
+        Intent intent = new Intent(EsqueceuSenhaActivity.this, LoginActivity.class);
+        startActivity(intent);
         EsqueceuSenhaActivity.this.finish();
     }
 }
