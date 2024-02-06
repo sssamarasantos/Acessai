@@ -4,6 +4,7 @@ namespace Acessai.Domain.Interfaces.Repository
 {
     public interface IAlunoRepository
     {
-        Task<Aluno> GetAlunoByIdAsync(long id);
+        Task<Aluno> GetAlunoByEmailAsync(string email);
+        Task<object> PostAlunoAsync(Aluno aluno);
     }
 }

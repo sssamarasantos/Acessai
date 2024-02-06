@@ -1,8 +1,7 @@
 ﻿using Acessai.Data.Context;
 using Acessai.Domain.Interfaces.Repository;
 using Acessai.Domain.Models;
-using Dapper;
-using System.Data;
+using Dommel;
 
 namespace Acessai.Data.Repository
 {
@@ -15,18 +14,19 @@ namespace Acessai.Data.Repository
             _dataContext = dataContext;
         }
 
-        public async Task<Aluno> GetAlunoByIdAsync(long id)
+        public async Task<Aluno> GetAlunoByEmailAsync(string email)
         {
-            var parameters = new DynamicParameters();
-            parameters.Add("@ID", id);
-
-            var query = "SELECT * FROM ALUNO WHERE ID = @ID";
-
             using var conn = _dataContext.CreateConnection();
 
-            var t = await conn.QueryFirstOrDefaultAsync(query, parameters, commandType: CommandType.Text);
+            return await conn.FirstOrDefaultAsync<Aluno>(x => x.Email == email);
+        }
 
-            return t;
+        public async Task<object> PostAlunoAsync(Aluno aluno)
+        {
+            using var conn = _dataContext.CreateConnection();
+
+            var response = await conn.InsertAsync(aluno);
+            return response;
         }
     }
 }

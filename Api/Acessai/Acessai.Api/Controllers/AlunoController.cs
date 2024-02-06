@@ -1,6 +1,5 @@
-﻿using Acessai.Domain.Interfaces.Repository;
+﻿using Acessai.Domain.Dtos;
 using Acessai.Domain.Interfaces.Services;
-using Acessai.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
@@ -17,15 +16,23 @@ namespace Acessai.Api.Controllers
             _alunoService = alunoService;
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> Get([FromRoute][Required] long id)
+        [HttpGet("{email}")]
+        public async Task<IActionResult> GetEmail([FromRoute][Required] string email)
         {
-            var response = await _alunoService.GetAlunoByIdAsync(id);
+            var response = await _alunoService.GetAlunoByEmailAsync(email);
 
             if (response == null)
             {
                 return NoContent();
             }
+
+            return Ok(response);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Post([FromBody][Required] AlunoRequest request)
+        {
+            var response = await _alunoService.PostAlunoAsync(request);
 
             return Ok(response);
         }

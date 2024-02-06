@@ -3,7 +3,6 @@ using Acessai.Data.Repository;
 using Acessai.Domain.Interfaces.Repository;
 using Acessai.Domain.Interfaces.Services;
 using Acessai.Service;
-using Microsoft.Extensions.WebEncoders.Testing;
 using System.Data.Common;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -26,6 +25,9 @@ builder.Services.AddSingleton<IAlunoRepository, AlunoRepository>();
 
 // Services
 builder.Services.AddSingleton<IAlunoService, AlunoService>();
+
+// Mapper
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
