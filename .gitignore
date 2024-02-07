@@ -77,17 +77,6 @@ Backup*/
 # Arquivos de teste
 TestResults/
 
-# Arquivos de projeto
-*.csproj
-*.vbproj
-*.vcxproj
-*.vcxproj.filters
-*.xproj
-project.lock.json
-.project.json
-*.pubxml
-*.publishproj
-
 # Arquivos de build
 *.dll
 *.exe
