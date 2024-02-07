@@ -25,8 +25,14 @@ namespace Acessai.Data.Repository
         {
             using var conn = _dataContext.CreateConnection();
 
-            var response = await conn.InsertAsync(aluno);
-            return response;
+           return await conn.InsertAsync(aluno);
+        }
+
+        public async Task<bool> LoginAsync(string email, string senha)
+        {
+            using var conn = _dataContext.CreateConnection();
+
+            return await conn.AnyAsync<Aluno>(x => x.Email == email && x.Senha == senha);
         }
     }
 }

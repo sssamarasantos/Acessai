@@ -7,5 +7,6 @@ namespace Acessai.Domain.Interfaces.Services
     {
         Task<Aluno> GetAlunoByEmailAsync(string email);
         Task<bool> PostAlunoAsync(AlunoRequest request);
+        Task<bool> LoginAsync(string email, string senha);
     }
 }

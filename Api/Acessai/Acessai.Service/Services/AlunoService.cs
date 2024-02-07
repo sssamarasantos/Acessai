@@ -29,5 +29,10 @@ namespace Acessai.Service
             var response = await _alunoRepository.PostAlunoAsync(aluno);
             return (int)response > 0;
         }
+
+        public async Task<bool> LoginAsync(string email, string senha)
+        {
+            return await _alunoRepository.LoginAsync(email, senha);
+        }
     }
 }
