@@ -21,18 +21,17 @@ import com.example.acessai.R;
 import com.example.acessai.classes.Host;
 import com.example.acessai.classes.Session;
 import com.example.acessai.classes.Utils;
-import com.koushikdutta.ion.Ion;
+import com.example.acessai.rest.AlunoHttpClient;
 
 import java.util.ArrayList;
 import java.util.Locale;
 
 public class LoginActivity extends AppCompatActivity {
-    private EditText login, senha, campo;
+    private EditText emailx, senhax, campo;
     private VideoView videoLibras;
     private ImageButton falar;
-    private FrameLayout  frameLibras;
+    private FrameLayout frameLibras;
     private ToggleButton libras;
-    private final String HOST_APP = new Host().getUrlApp();
     private final String HOST_SITE = new Host().getUrlSite();
     private final int ID_TEXTO_PARA_VOZ = 100;
 
@@ -47,32 +46,32 @@ public class LoginActivity extends AppCompatActivity {
         frameLibras = (FrameLayout) findViewById(R.id.frameLibras);
         libras = (ToggleButton) findViewById(R.id.tbLibras);
         falar = (ImageButton) findViewById(R.id.btnImgFalar);
-        login = (EditText) findViewById(R.id.txtLogin);
-        senha = (EditText) findViewById(R.id.txtSenhaL);
+        emailx = (EditText) findViewById(R.id.txtLogin);
+        senhax = (EditText) findViewById(R.id.txtSenhaL);
         Button entrar = (Button) findViewById(R.id.btnLogar);
         Button cadastrar = (Button) findViewById(R.id.btnCadastrar);
         Button esqueceuSenha = (Button) findViewById(R.id.btnEsqueceuSenha);
         Button trabalheConosco = (Button) findViewById(R.id.btnTbConosco);
 
-	    //deixa o botão falar desabilitado
+        //deixa o botão falar desabilitado
         falar.setEnabled(false);
 
         //deixa a tela do video libras escondido
         frameLibras.setVisibility(View.INVISIBLE);
 
         //evento de foco login
-        login.setOnFocusChangeListener((v, hasFocus) -> {
+        emailx.setOnFocusChangeListener((v, hasFocus) -> {
             //atribui o valor do edittext login para o campo
-            campo = login;
+            campo = emailx;
 
             //deixa o botão falar habilitado
             falar.setEnabled(true);
         });
 
         //evento de foco senha
-        senha.setOnFocusChangeListener((v, hasFocus) -> {
+        senhax.setOnFocusChangeListener((v, hasFocus) -> {
             //atribui o valor do edittext senha para o campo
-            campo = senha;
+            campo = senhax;
 
             //deixa o botão falar habilitado
             falar.setEnabled(true);
@@ -80,7 +79,7 @@ public class LoginActivity extends AppCompatActivity {
 
         //evento do botão logar
         entrar.setOnClickListener(v -> {
-            signIn(login.getText().toString(), senha.getText().toString());
+            login(emailx.getText().toString(), senhax.getText().toString());
         });
 
         //evento do botao cadastrar
@@ -124,12 +123,12 @@ public class LoginActivity extends AppCompatActivity {
             //verifica se o dispositivo tem suporte para o recurso
             try {
                 startActivityForResult(intentVoz, ID_TEXTO_PARA_VOZ);
-            } catch (ActivityNotFoundException a){
+            } catch (ActivityNotFoundException a) {
                 utils.showAlert("Dispositivo não suporta!", LoginActivity.this);
             }
         });
 
-	    //evento do botao libras
+        //evento do botao libras
         libras.setOnCheckedChangeListener((buttonView, isChecked) -> {
             //se o botao estiver no modo ligar (selecionado)
             if (isChecked) {
@@ -152,11 +151,11 @@ public class LoginActivity extends AppCompatActivity {
                 frameLibras.setVisibility(View.INVISIBLE);
             }
         });
-	
-	    //evento do botão trabalhe conosco
+
+        //evento do botão trabalhe conosco
         trabalheConosco.setOnClickListener(v -> {
             //instancia o endereço web para qual se quer ir
-            Uri acessar = Uri.parse( HOST_SITE + "/trabalhe.php");
+            Uri acessar = Uri.parse(HOST_SITE + "/trabalhe.php");
 
             //instancia o intent e coloca a ação e a variavel com o endereço
             Intent i = new Intent(Intent.ACTION_VIEW, acessar);
@@ -167,93 +166,70 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     //Metodo logar
-    public void signIn(String email, String password){
-	
-	    //recebe o valor que estabele se os dados digitados estão corretos
-        boolean isValidData = validateFields(email, password);
+    public void login(String email, String senha) {
 
-	    //se os dados estiverem corretos
+        //recebe o valor que estabele se os dados digitados estão corretos
+        boolean isValidData = validarCampos(email, senha);
+
+        //se os dados estiverem corretos
         if (isValidData) {
+            AlunoHttpClient alunoHttpClient = new AlunoHttpClient();
+            boolean response = alunoHttpClient.logar(LoginActivity.this, email, senha);
 
-	        //chama o endereço onde esta localizado o php
-            String url = HOST_APP + "/login.php";
+            if (response) {
+                Session session = new Session(LoginActivity.this);
+                session.createSession(email, senha);
 
-	        //declara o contexto
-            Ion.with(LoginActivity.this)
+                Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+                startActivity(intent);
+                LoginActivity.this.finish();
+            } else {
+                utils.showAlert("Algo deu errado :(", LoginActivity.this);
 
-		    //carrega o url
-                    .load(url)
-
-		            //manda os valores digitados
-                    .setBodyParameter("usuario", email)
-                    .setBodyParameter("senha", password)
-                    .asJsonObject()
-                    .setCallback((e, result) -> {
-                        //recebe os resultados e manda para a variavel ret
-                        String status = result.get("status").getAsString();
-
-                        //verifica o valor recebido
-                        if (status.equals("ok")) {
-                            //guarda os valores de login na "sessao"
-                            Session session = new Session(LoginActivity.this);
-                            session.createSession(email, password);
-
-                            //instancia o intent e atribui de qual activity vai partir e para qual vai
-                            Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
-
-                            //chama o objeto instanciado
-                            startActivity(intent);
-
-                            //finaliza a activity
-                            LoginActivity.this.finish();
-                        } else {
-                            //chama o metodo alerta da classe Metodos, que exibe um alerta na tela
-                            utils.showAlert("Algo deu errado :(", LoginActivity.this);
-
-                            //atribui valor vazio ao edittext login e senha
-                            login.setText("");
-                            senha.setText("");
-                        }
-                    });
+                emailx.setText("");
+                senhax.setText("");
+            }
         }
     }
+
     //Metodo para validar os campos
-    private boolean validateFields(String email, String password) {
-	    //atribui valor falso, ou seja, errado
+    private boolean validarCampos(String email, String password) {
+        //atribui valor falso, ou seja, errado
         boolean isValid = false;
-	
-	    //verifica se os campos estão vazios
+
+        //verifica se os campos estão vazios
         if (!TextUtils.isEmpty(email) && !TextUtils.isEmpty(password)) {
-	        //verifica se estar no formato de email
+            //verifica se estar no formato de email
             if (android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-		        //se tudo estiver correto, atribui valor verdadeiro
+                //se tudo estiver correto, atribui valor verdadeiro
                 isValid = true;
             } else {
-		        //chama o metodo alerta e mostra na tela
+                //chama o metodo alerta e mostra na tela
                 utils.showAlert("Formato inválido!", LoginActivity.this);
 
-		        //atribui valor vazio
-                login.setText("");
+                //atribui valor vazio
+                emailx.setText("");
 
-		        //aponta o erro
-                login.setError("*");
+                //aponta o erro
+                emailx.setError("*");
 
-		        //foca no edittext
-                login.requestFocus();
+                //foca no edittext
+                emailx.requestFocus();
             }
         } else {
-	        //chama o metodo alerta e mostra na tela
+            //chama o metodo alerta e mostra na tela
             utils.showAlert("Preencha todos os campos!", LoginActivity.this);
         }
-	    //retorna se os campos estão corretos ou não
+        //retorna se os campos estão corretos ou não
         return isValid;
     }
+
     //metodo resultado falar
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-	
-	    //atraves do código verifica as opções
+
+        //atraves do código verifica as opções
         if (requestCode == ID_TEXTO_PARA_VOZ) {
             //captura o que foi falado e transcreve em texto no campo focado
             if (resultCode == RESULT_OK && null != data) {
@@ -270,7 +246,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-	    //finaliza a activity
+        //finaliza a activity
         LoginActivity.this.finish();
     }
 }
