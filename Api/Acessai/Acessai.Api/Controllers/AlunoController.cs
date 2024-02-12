@@ -1,4 +1,5 @@
 ﻿using Acessai.Domain.Dtos;
+using Acessai.Domain.Dtos.Login;
 using Acessai.Domain.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
@@ -29,10 +30,18 @@ namespace Acessai.Api.Controllers
             return Ok(response);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Post([FromBody][Required] AlunoRequest request)
+        [HttpPost("Cadastro")]
+        public async Task<IActionResult> Cadastro([FromBody][Required] AlunoRequest request)
         {
-            var response = await _alunoService.PostAlunoAsync(request);
+            var response = await _alunoService.CadastrarAsync(request);
+
+            return Ok(response);
+        }
+
+        [HttpPost("Login")]
+        public async Task<IActionResult> Login([FromBody][Required] LoginRequest request)
+        {
+            var response = await _alunoService.LoginAsync(request.Email, request.Senha);
 
             return Ok(response);
         }

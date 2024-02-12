@@ -22,7 +22,7 @@ namespace Acessai.Service
             return await _alunoRepository.GetAlunoByEmailAsync(email);
         }
 
-        public async Task<bool> PostAlunoAsync(AlunoRequest request)
+        public async Task<bool> CadastrarAsync(AlunoRequest request)
         {
             var aluno = _mapper.Map<Aluno>(request);
 
