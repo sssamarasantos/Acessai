@@ -27,7 +27,7 @@ namespace Acessai.Service
             var aluno = _mapper.Map<Aluno>(request);
 
             var response = await _alunoRepository.PostAlunoAsync(aluno);
-            return (int)response > 0;
+            return (decimal)response > 0;
         }
 
         public async Task<bool> LoginAsync(string email, string senha)
