@@ -174,21 +174,24 @@ public class LoginActivity extends AppCompatActivity {
         //se os dados estiverem corretos
         if (isValidData) {
             AlunoHttpClient alunoHttpClient = new AlunoHttpClient();
-            boolean response = alunoHttpClient.logar(LoginActivity.this, email, senha);
+           alunoHttpClient.logar(LoginActivity.this, email, senha).thenAccept(result -> {
+               if (result) {
+                   Session session = new Session(LoginActivity.this);
+                   session.createSession(email, senha);
 
-            if (response) {
-                Session session = new Session(LoginActivity.this);
-                session.createSession(email, senha);
+                   Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+                   startActivity(intent);
+                   LoginActivity.this.finish();
+               } else {
+                   utils.showAlert("Algo deu errado :(", LoginActivity.this);
 
-                Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
-                startActivity(intent);
-                LoginActivity.this.finish();
-            } else {
-                utils.showAlert("Algo deu errado :(", LoginActivity.this);
-
-                emailx.setText("");
-                senhax.setText("");
-            }
+                   emailx.setText("");
+                   senhax.setText("");
+               }
+           }).exceptionally(e -> {
+               // lida com a exceção
+               return null;
+           });
         }
     }
 

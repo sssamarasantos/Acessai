@@ -76,7 +76,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         session = new Session(getApplicationContext());
         HashMap<String, String> userDetails = session.getUserDetails();
         String user = userDetails.get(Session.KEY_EMAIL);
-        callAssistance(user);
+        //callAssistance(user);
 
         libras.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {

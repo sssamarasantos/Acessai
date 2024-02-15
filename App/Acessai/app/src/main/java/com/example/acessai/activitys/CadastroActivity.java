@@ -135,30 +135,33 @@ public class CadastroActivity extends AppCompatActivity {
 
         if (isValidData) {
             AlunoHttpClient alunoHttpClient = new AlunoHttpClient();
-            boolean response = alunoHttpClient.cadastrar(CadastroActivity.this, aluno);
-
-            if (response) {
-                //alert
-                AlertDialog.Builder builder = new AlertDialog.Builder(CadastroActivity.this);
-                builder.setMessage("Usuário cadastrado com sucesso!");
-                builder.setTitle("Aviso");
-                builder.setNeutralButton("OK", (dialog, which) -> {
-                    Intent intent = new Intent(CadastroActivity.this, LoginActivity.class);
-                    startActivity(intent);
-                    CadastroActivity.this.finish();
-                });
-                builder.create().show();
-            } else {
-                utils.showAlert("Algo deu errado :(", CadastroActivity.this);
-                login.setText("");
-                nome.setText("");
-                senha.setText("");
-                confSenha.setText("");
-                auditiva.setChecked(false);
-                visual.setChecked(false);
-                cognitiva.setChecked(false);
-                nenhuma.setChecked(false);
-            }
+            alunoHttpClient.cadastrar(CadastroActivity.this, aluno).thenAccept(result -> {
+                if (result) {
+                    //alert
+                    AlertDialog.Builder builder = new AlertDialog.Builder(CadastroActivity.this);
+                    builder.setMessage("Usuário cadastrado com sucesso!");
+                    builder.setTitle("Aviso");
+                    builder.setNeutralButton("OK", (dialog, which) -> {
+                        Intent intent = new Intent(CadastroActivity.this, LoginActivity.class);
+                        startActivity(intent);
+                        CadastroActivity.this.finish();
+                    });
+                    builder.create().show();
+                } else {
+                    utils.showAlert("Algo deu errado :(", CadastroActivity.this);
+                    login.setText("");
+                    nome.setText("");
+                    senha.setText("");
+                    confSenha.setText("");
+                    auditiva.setChecked(false);
+                    visual.setChecked(false);
+                    cognitiva.setChecked(false);
+                    nenhuma.setChecked(false);
+                }
+            }).exceptionally(e -> {
+                // lida com a exceção
+                return null;
+            });
         }
     }
 

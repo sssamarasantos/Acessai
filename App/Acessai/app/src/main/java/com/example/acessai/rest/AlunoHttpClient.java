@@ -7,6 +7,7 @@ import com.example.acessai.classes.Usuario;
 import com.google.gson.JsonObject;
 import com.koushikdutta.ion.Ion;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class AlunoHttpClient {
@@ -14,8 +15,8 @@ public class AlunoHttpClient {
 
     String urlBase = HOST_API + "/api/Aluno";
 
-    public boolean cadastrar(Context context, Usuario aluno){
-        AtomicBoolean response = new AtomicBoolean(false);
+    public CompletableFuture<Boolean> cadastrar(Context context, Usuario aluno) {
+        CompletableFuture<Boolean> future = new CompletableFuture<>();
 
         JsonObject json = new JsonObject();
         json.addProperty("nome", aluno.getNome());
@@ -28,14 +29,18 @@ public class AlunoHttpClient {
                 .setJsonObjectBody(json)
                 .asString()
                 .setCallback((e, result) -> {
-                    response.set(Boolean.parseBoolean(result));
+                    if (e == null) {
+                        future.complete(Boolean.parseBoolean(result));
+                    } else {
+                        future.completeExceptionally(e);
+                    }
                 });
 
-        return response.get();
+        return future;
     }
 
-    public boolean logar(Context context, String email, String password){
-        AtomicBoolean response = new AtomicBoolean(false);
+    public CompletableFuture<Boolean> logar(Context context, String email, String password){
+        CompletableFuture<Boolean> future = new CompletableFuture<>();
 
         JsonObject json = new JsonObject();
         json.addProperty("email", email);
@@ -46,9 +51,13 @@ public class AlunoHttpClient {
                 .setJsonObjectBody(json)
                 .asString()
                 .setCallback((e, result) -> {
-                    response.set(Boolean.parseBoolean(result));
+                    if (e == null) {
+                        future.complete(Boolean.parseBoolean(result));
+                    } else {
+                        future.completeExceptionally(e);
+                    }
                 });
 
-        return response.get();
+        return future;
     }
 }
