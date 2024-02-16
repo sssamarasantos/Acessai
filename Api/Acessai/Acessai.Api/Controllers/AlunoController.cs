@@ -20,7 +20,7 @@ namespace Acessai.Api.Controllers
         [HttpGet("{email}")]
         public async Task<IActionResult> GetEmail([FromRoute][Required] string email)
         {
-            var response = await _alunoService.GetAlunoByEmailAsync(email);
+            var response = await _alunoService.BuscarPorEmailAsync(email);
 
             if (response == null)
             {
@@ -42,6 +42,14 @@ namespace Acessai.Api.Controllers
         public async Task<IActionResult> Login([FromBody][Required] LoginRequest request)
         {
             var response = await _alunoService.LoginAsync(request.Email, request.Senha);
+
+            return Ok(response);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Atualizar([FromRoute][Required] long id, [FromBody][Required] AlunoRequest request)
+        {
+            var response = await _alunoService.AtualizarAsync(id, request);
 
             return Ok(response);
         }

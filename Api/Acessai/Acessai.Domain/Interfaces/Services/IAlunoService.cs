@@ -5,8 +5,9 @@ namespace Acessai.Domain.Interfaces.Services
 {
     public interface IAlunoService
     {
-        Task<Aluno> GetAlunoByEmailAsync(string email);
+        Task<Aluno> BuscarPorEmailAsync(string email);
         Task<bool> CadastrarAsync(AlunoRequest request);
         Task<bool> LoginAsync(string email, string senha);
+        Task<bool> AtualizarAsync(long id, AlunoRequest request);
     }
 }
