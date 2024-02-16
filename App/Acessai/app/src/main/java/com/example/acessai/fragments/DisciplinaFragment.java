@@ -101,7 +101,7 @@ public class DisciplinaFragment extends Fragment {
             listSubjects(context);
         });
 
-        utils.showLibras(frameLibras, libras, HomeFragment.assistenciaAluno);
+        utils.mostrarLibras(frameLibras, libras, HomeFragment.assistenciaAluno);
 
         libras.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {

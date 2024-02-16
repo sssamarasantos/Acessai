@@ -94,7 +94,7 @@ public class CadastroActivity extends AppCompatActivity {
             Assistencia assistencia = atribuirAssistencia();
 
             Usuario aluno = new Usuario();
-            aluno.setUsuario(nome.getText().toString(), login.getText().toString(), senha.getText().toString(), assistencia);
+            aluno.setUsuario(nome.getText().toString(), login.getText().toString(), senha.getText().toString(), assistencia.toString());
 
             cadastrar(aluno);
         });

@@ -24,7 +24,10 @@ import androidx.fragment.app.Fragment;
 import com.example.acessai.R;
 import com.example.acessai.classes.Host;
 import com.example.acessai.classes.Session;
+import com.example.acessai.classes.Usuario;
 import com.example.acessai.classes.Utils;
+import com.example.acessai.enums.Assistencia;
+import com.example.acessai.rest.AlunoHttpClient;
 import com.google.gson.JsonObject;
 import com.koushikdutta.ion.Ion;
 
@@ -69,8 +72,8 @@ public class UsuarioFragment extends Fragment {
 
         session = new Session(context);
         HashMap<String, String> userDetails = session.getUserDetails();
-        String user = userDetails.get(Session.KEY_EMAIL);
-        getUser(user);
+        String emailx = userDetails.get(Session.KEY_EMAIL);
+        buscarUsuario(emailx);
 
         nome.setEnabled(false);
         email.setEnabled(false);
@@ -132,7 +135,7 @@ public class UsuarioFragment extends Fragment {
 
             try {
                 startActivityForResult(intentVoz, ID_TEXTO_PARA_VOZ);
-            } catch (ActivityNotFoundException a){
+            } catch (ActivityNotFoundException a) {
                 utils.showAlert("Dispositivo não suporta!", context);
             }
         });
@@ -153,60 +156,40 @@ public class UsuarioFragment extends Fragment {
         return view;
     }
 
-    private void getUser(String user) {
-        String url = HOST_APP + "/usuario.php";
-        Ion.with(getActivity())
-                .load(url)
-                .setBodyParameter("usuario", user)
-                .asJsonArray()
-                .setCallback((e, result) -> {
-                    for (int i = 0; i < result.size(); i++){
-                        JsonObject response = result.get(i).getAsJsonObject();
-
-                        id = response.get("ID_ALUNO").getAsString();
-                        nomeu = response.get("NOME_ALUNO").getAsString();
-                        emailu = response.get("EMAIL_ALUNO").getAsString();
-                        senhau = response.get("SENHA_ALUNO").getAsString();
-                        assistenciau = response.get("ASSISTENCIA_ALUNO").getAsString();
-                    }
-                    utils.showLibras(frameLibras, libras, assistenciau);
-                    nome.setText(nomeu);
-                    email.setText(emailu);
-                    senha.setText(senhau);
-                    assistencia.setText(assistenciau);
-                });
+    private void buscarUsuario(String emailx) {
+        AlunoHttpClient alunoHttpClient = new AlunoHttpClient();
+        alunoHttpClient.buscar(getContext(), emailx).thenAccept(result -> {
+            nome.setText(result.getNome());
+            email.setText(result.getEmail());
+            senha.setText(result.getSenha());
+            assistencia.setText(result.getAssistencia().toString());
+            utils.mostrarLibras(frameLibras, libras, assistencia.toString());
+        });
     }
 
     private void updateUser() {
         boolean isValidData = validateFields();
 
         if (isValidData) {
-            String url = HOST_APP + "/alterar.php";
-            Ion.with(getActivity())
-                    .load(url)
-                    .setBodyParameter("id", id)
-                    .setBodyParameter("login", email.getText().toString())
-                    .setBodyParameter("senha", senha.getText().toString())
-                    .setBodyParameter("nome", nome.getText().toString())
-                    .setBodyParameter("assistencia", assistencia.getText().toString())
-                    .asJsonObject()
-                    .setCallback((e, result) -> {
-                        String response = result.get("status").getAsString();
-                        if (response.equals("ok")) {
+            Usuario aluno = new Usuario();
+            aluno.setUsuario(nome.getText().toString(), email.getText().toString(), senha.getText().toString(), assistencia.getText().toString());
 
-                            utils.showAlert("Alteração feita com sucesso!", getContext());
+            AlunoHttpClient alunoHttpClient = new AlunoHttpClient();
+            alunoHttpClient.atualizar(getActivity(), aluno).thenAccept(result -> {
+                if (result) {
+                    utils.showAlert("Alteração feita com sucesso!", getContext());
 
-                            getUser(email.getText().toString());
+                    buscarUsuario(email.getText().toString());
 
-                            nome.setEnabled(false);
-                            email.setEnabled(false);
-                            senha.setEnabled(false);
-                            assistencia.setEnabled(false);
-                            falar.setEnabled(false);
-                        } else {
-                            utils.showAlert("Algo deu errado :(", getContext());
-                        }
-                    });
+                    nome.setEnabled(false);
+                    email.setEnabled(false);
+                    senha.setEnabled(false);
+                    assistencia.setEnabled(false);
+                    falar.setEnabled(false);
+                } else {
+                    utils.showAlert("Algo deu errado :(", getContext());
+                }
+            });
         }
     }
 
@@ -216,8 +199,8 @@ public class UsuarioFragment extends Fragment {
         if (!TextUtils.isEmpty(email.getText().toString())
                 && !TextUtils.isEmpty(nome.getText().toString())
                 && !TextUtils.isEmpty(senha.getText().toString())
-                && !TextUtils.isEmpty(assistencia.getText().toString())){
-            if (android.util.Patterns.EMAIL_ADDRESS.matcher(email.getText().toString()).matches()){
+                && !TextUtils.isEmpty(assistencia.getText().toString())) {
+            if (android.util.Patterns.EMAIL_ADDRESS.matcher(email.getText().toString()).matches()) {
                 isValid = true;
             } else {
                 utils.showAlert("Formato inválido!", getContext());

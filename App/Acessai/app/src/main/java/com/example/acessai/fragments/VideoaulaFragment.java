@@ -102,7 +102,7 @@ public class VideoaulaFragment extends Fragment {
         chamarVideo(context);
         verificarItem(context);
         displayComments(context);
-        utils.showLibras(frameLibras, libras, HomeFragment.assistenciaAluno);
+        utils.mostrarLibras(frameLibras, libras, HomeFragment.assistenciaAluno);
 
         visto.setOnClickListener(v -> {
             visto.toggle();
@@ -153,7 +153,7 @@ public class VideoaulaFragment extends Fragment {
             }
         });
 
-        utils.showLibras(frameLibras, libras, HomeFragment.assistenciaAluno);
+        utils.mostrarLibras(frameLibras, libras, HomeFragment.assistenciaAluno);
 
         libras.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {

@@ -7,7 +7,8 @@ public class Usuario {
     String nome;
     String email;
     String senha;
-    Assistencia assistencia;
+    String assistencia;
+    String dataHoraCriacao;
 
     public int getId(){
         return id;
@@ -25,11 +26,11 @@ public class Usuario {
         return senha;
     }
 
-    public Assistencia getAssistencia() {
+    public String getAssistencia() {
         return assistencia;
     }
 
-    public void setUsuario(String nome, String email, String senha, Assistencia assistencia){
+    public void setUsuario(String nome, String email, String senha, String assistencia){
         this.nome = nome;
         this.email = email;
         this.senha = senha;

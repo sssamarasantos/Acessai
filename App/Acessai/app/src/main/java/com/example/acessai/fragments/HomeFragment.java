@@ -116,7 +116,7 @@ public class HomeFragment extends Fragment {
                         idAluno = response.get("ID_ALUNO").getAsString();
                         assistenciaAluno = response.get("ASSISTENCIA_ALUNO").getAsString();
                     }
-                    utils.showLibras(frameLibras, libras, assistenciaAluno);
+                    utils.mostrarLibras(frameLibras, libras, assistenciaAluno);
                 });
     }
 }

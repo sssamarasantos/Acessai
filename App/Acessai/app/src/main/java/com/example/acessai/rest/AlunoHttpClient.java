@@ -12,11 +12,24 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class AlunoHttpClient {
     private final String HOST_API = new Host().getUrlApi();
+    private final String urlBase = HOST_API + "/api/Aluno";
 
-    String urlBase = HOST_API + "/api/Aluno";
+    public CompletableFuture<Usuario> buscar(Context context, String email) {
+        CompletableFuture<Usuario> response = new CompletableFuture<>();
+
+        Ion.with(context)
+                .load("GET", urlBase + "/" + email)
+                //.set("email", email)
+                .asJsonObject()
+                .setCallback((e, result) -> {
+                    System.out.println(result);
+                });
+
+        return response;
+    }
 
     public CompletableFuture<Boolean> cadastrar(Context context, Usuario aluno) {
-        CompletableFuture<Boolean> future = new CompletableFuture<>();
+        CompletableFuture<Boolean> response = new CompletableFuture<>();
 
         JsonObject json = new JsonObject();
         json.addProperty("nome", aluno.getNome());
@@ -30,17 +43,17 @@ public class AlunoHttpClient {
                 .asString()
                 .setCallback((e, result) -> {
                     if (e == null) {
-                        future.complete(Boolean.parseBoolean(result));
+                        response.complete(Boolean.parseBoolean(result));
                     } else {
-                        future.completeExceptionally(e);
+                        response.completeExceptionally(e);
                     }
                 });
 
-        return future;
+        return response;
     }
 
-    public CompletableFuture<Boolean> logar(Context context, String email, String password){
-        CompletableFuture<Boolean> future = new CompletableFuture<>();
+    public CompletableFuture<Boolean> logar(Context context, String email, String password) {
+        CompletableFuture<Boolean> response = new CompletableFuture<>();
 
         JsonObject json = new JsonObject();
         json.addProperty("email", email);
@@ -52,12 +65,36 @@ public class AlunoHttpClient {
                 .asString()
                 .setCallback((e, result) -> {
                     if (e == null) {
-                        future.complete(Boolean.parseBoolean(result));
+                        response.complete(Boolean.parseBoolean(result));
                     } else {
-                        future.completeExceptionally(e);
+                        response.completeExceptionally(e);
                     }
                 });
 
-        return future;
+        return response;
+    }
+
+    public CompletableFuture<Boolean> atualizar(Context context, Usuario aluno){
+        CompletableFuture<Boolean> response = new CompletableFuture<>();
+
+        JsonObject json = new JsonObject();
+        json.addProperty("nome", aluno.getNome());
+        json.addProperty("email", aluno.getEmail());
+        json.addProperty("senha", aluno.getSenha());
+        json.addProperty("assistencia", aluno.getAssistencia().toString());
+
+        Ion.with(context)
+                .load("PUT", urlBase + "/" + aluno.getId())
+                .setJsonObjectBody(json)
+                .asString()
+                .setCallback((e, result) -> {
+                    if (e == null) {
+                        response.complete(Boolean.parseBoolean(result));
+                    } else {
+                        response.completeExceptionally(e);
+                    }
+                });
+
+        return response;
     }
 }

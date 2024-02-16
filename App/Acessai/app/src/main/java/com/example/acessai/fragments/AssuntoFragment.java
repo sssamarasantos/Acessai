@@ -59,7 +59,7 @@ public class AssuntoFragment extends Fragment {
         listaId = new ArrayList<>();
 
         listClassSubject(context);
-        utils.showLibras(frameLibras, libras, HomeFragment.assistenciaAluno);
+        utils.mostrarLibras(frameLibras, libras, HomeFragment.assistenciaAluno);
 
         listaAulas.setOnItemClickListener((parent, view1, position, id) -> {
             nAssunto = listaAulas.getItemAtPosition(position).toString();
