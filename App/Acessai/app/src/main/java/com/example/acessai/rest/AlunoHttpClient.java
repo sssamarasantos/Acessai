@@ -5,6 +5,7 @@ import android.content.Context;
 import com.example.acessai.classes.Host;
 import com.example.acessai.classes.Usuario;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import com.koushikdutta.ion.Ion;
 
 import java.util.concurrent.CompletableFuture;
@@ -15,14 +16,15 @@ public class AlunoHttpClient {
     private final String urlBase = HOST_API + "/api/Aluno";
 
     public CompletableFuture<Usuario> buscar(Context context, String email) {
+        TypeToken<Usuario> type = new TypeToken<Usuario>() {};
         CompletableFuture<Usuario> response = new CompletableFuture<>();
 
         Ion.with(context)
-                .load("GET", urlBase + "/" + email)
+                .load("GET", urlBase + "?email=" + email)
                 //.set("email", email)
-                .asJsonObject()
-                .setCallback((e, result) -> {
-                    System.out.println(result);
+                .as(type)
+                .setCallback((e, usuario) -> {
+                    System.out.println(usuario);
                 });
 
         return response;

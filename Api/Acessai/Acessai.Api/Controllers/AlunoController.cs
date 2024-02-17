@@ -17,8 +17,8 @@ namespace Acessai.Api.Controllers
             _alunoService = alunoService;
         }
 
-        [HttpGet("{email}")]
-        public async Task<IActionResult> GetEmail([FromRoute][Required] string email)
+        [HttpGet]
+        public async Task<IActionResult> GetEmail([FromQuery][Required] string email)
         {
             var response = await _alunoService.BuscarPorEmailAsync(email);
 

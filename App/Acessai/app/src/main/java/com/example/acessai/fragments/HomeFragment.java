@@ -20,6 +20,7 @@ import com.example.acessai.R;
 import com.example.acessai.classes.Host;
 import com.example.acessai.classes.Session;
 import com.example.acessai.classes.Utils;
+import com.example.acessai.rest.AlunoHttpClient;
 import com.google.gson.JsonObject;
 import com.koushikdutta.ion.Ion;
 
@@ -29,7 +30,6 @@ public class HomeFragment extends Fragment {
     private VideoView videoLibras;
     private FrameLayout frameLibras;
     private ToggleButton libras;
-    private final String HOST_APP = new Host().getUrlApp();
     public static String idAluno, assistenciaAluno;
     Session session;
 
@@ -54,9 +54,9 @@ public class HomeFragment extends Fragment {
 	    //recupera os valores da "sessao"
         session = new Session(getActivity());
         HashMap<String, String> usuario = session.getUserDetails();
-        String user = usuario.get(Session.KEY_EMAIL);
+        String email = usuario.get(Session.KEY_EMAIL);
 	    //chama o metodo usuario
-        user(user);
+        chamarAssistencia(email);
 
         //mantem o botão e video de libras escondidos
         libras.setVisibility(View.INVISIBLE);
@@ -103,20 +103,12 @@ public class HomeFragment extends Fragment {
     }
 
     //metodo chamar usuário
-    private void user(String user) {
-        String url = HOST_APP + "/usuario.php";
-        Ion.with(getActivity())
-                .load(url)
-                .setBodyParameter("usuario", user)
-                .asJsonArray()
-                .setCallback((e, result) -> {
-                    //recebe os valores e atribui para cada variavel
-                    for (int i = 0; i < result.size(); i++){
-                        JsonObject response = result.get(i).getAsJsonObject();
-                        idAluno = response.get("ID_ALUNO").getAsString();
-                        assistenciaAluno = response.get("ASSISTENCIA_ALUNO").getAsString();
-                    }
-                    utils.mostrarLibras(frameLibras, libras, assistenciaAluno);
-                });
+    private void chamarAssistencia(String email) {
+        AlunoHttpClient alunoHttpClient = new AlunoHttpClient();
+        alunoHttpClient.buscar(getActivity(), email).thenAccept(result -> {
+            assistenciaAluno = result.getAssistencia();
+
+            utils.mostrarLibras(frameLibras, libras, assistenciaAluno);
+        });
     }
 }
