@@ -1,8 +1,11 @@
 using Acessai.Data.Context;
+using Acessai.Data.Repositories;
 using Acessai.Data.Repository;
+using Acessai.Domain.Interfaces.Repositories;
 using Acessai.Domain.Interfaces.Repository;
 using Acessai.Domain.Interfaces.Services;
 using Acessai.Service;
+using Acessai.Service.Services;
 using System.Data.Common;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,15 +19,15 @@ builder.Services.AddSingleton(new DbConnectionStringBuilder
     ConnectionString = builder.Configuration.GetConnectionString("DefaultConnection")
 });
 
-var text = builder.Configuration.GetConnectionString("DefaultConnection");
-
 builder.Services.AddSingleton<DataContext>();
 
 // Repository
 builder.Services.AddSingleton<IAlunoRepository, AlunoRepository>();
+builder.Services.AddSingleton<IDisciplinaRepository, DisciplinaRepository>();
 
 // Services
 builder.Services.AddSingleton<IAlunoService, AlunoService>();
+builder.Services.AddSingleton<IDisciplinaService, DisciplinaService>();
 
 // Mapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
