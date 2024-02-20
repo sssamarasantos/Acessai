@@ -9,7 +9,6 @@ import com.google.gson.reflect.TypeToken;
 import com.koushikdutta.ion.Ion;
 
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class AlunoHttpClient {
     private final String HOST_API = new Host().getUrlApi();
@@ -21,10 +20,13 @@ public class AlunoHttpClient {
 
         Ion.with(context)
                 .load("GET", urlBase + "?email=" + email)
-                //.set("email", email)
                 .as(type)
                 .setCallback((e, usuario) -> {
-                    System.out.println(usuario);
+                    if (e == null) {
+                        response.complete(usuario);
+                    } else {
+                        response.completeExceptionally(e);
+                    }
                 });
 
         return response;
@@ -37,7 +39,7 @@ public class AlunoHttpClient {
         json.addProperty("nome", aluno.getNome());
         json.addProperty("email", aluno.getEmail());
         json.addProperty("senha", aluno.getSenha());
-        json.addProperty("assistencia", aluno.getAssistencia().toString());
+        json.addProperty("assistencia", aluno.getAssistencia());
 
         Ion.with(context)
                 .load(urlBase + "/cadastro")
@@ -83,7 +85,7 @@ public class AlunoHttpClient {
         json.addProperty("nome", aluno.getNome());
         json.addProperty("email", aluno.getEmail());
         json.addProperty("senha", aluno.getSenha());
-        json.addProperty("assistencia", aluno.getAssistencia().toString());
+        json.addProperty("assistencia", aluno.getAssistencia());
 
         Ion.with(context)
                 .load("PUT", urlBase + "/" + aluno.getId())

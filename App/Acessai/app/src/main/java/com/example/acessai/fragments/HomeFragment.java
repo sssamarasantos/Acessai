@@ -17,12 +17,9 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.acessai.R;
-import com.example.acessai.classes.Host;
 import com.example.acessai.classes.Session;
 import com.example.acessai.classes.Utils;
 import com.example.acessai.rest.AlunoHttpClient;
-import com.google.gson.JsonObject;
-import com.koushikdutta.ion.Ion;
 
 import java.util.HashMap;
 

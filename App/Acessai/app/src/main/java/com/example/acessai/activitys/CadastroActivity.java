@@ -24,9 +24,6 @@ import com.example.acessai.classes.Usuario;
 import com.example.acessai.classes.Utils;
 import com.example.acessai.enums.Assistencia;
 import com.example.acessai.rest.AlunoHttpClient;
-import com.google.gson.JsonObject;
-import com.koushikdutta.async.future.FutureCallback;
-import com.koushikdutta.ion.Ion;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -35,7 +32,6 @@ public class CadastroActivity extends AppCompatActivity {
 
     private EditText login, senha, confSenha, nome, campo;
     private RadioButton auditiva, visual, cognitiva, nenhuma;
-    private Button cadastro;
     private ImageButton falar;
     private FrameLayout frameLibras;
     private ToggleButton libras;
@@ -62,7 +58,7 @@ public class CadastroActivity extends AppCompatActivity {
         cognitiva = (RadioButton) findViewById(R.id.rbCognitiva);
         visual = (RadioButton) findViewById(R.id.rbVisual);
         nenhuma = (RadioButton) findViewById(R.id.rbNenhuma);
-        cadastro = (Button) findViewById(R.id.btnCadastro);
+        Button cadastro = (Button) findViewById(R.id.btnCadastro);
 
         falar.setEnabled(false);
 

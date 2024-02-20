@@ -1,6 +1,5 @@
 package com.example.acessai.activitys;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,7 +18,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.example.acessai.R;
 import com.example.acessai.classes.Session;
 import com.example.acessai.classes.Utils;
-import com.example.acessai.enums.Assistencia;
 import com.example.acessai.fragments.HomeFragment;
 import com.example.acessai.fragments.UsuarioFragment;
 import com.example.acessai.rest.AlunoHttpClient;

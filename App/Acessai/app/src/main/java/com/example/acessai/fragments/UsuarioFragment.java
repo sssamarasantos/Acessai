@@ -26,10 +26,7 @@ import com.example.acessai.classes.Host;
 import com.example.acessai.classes.Session;
 import com.example.acessai.classes.Usuario;
 import com.example.acessai.classes.Utils;
-import com.example.acessai.enums.Assistencia;
 import com.example.acessai.rest.AlunoHttpClient;
-import com.google.gson.JsonObject;
-import com.koushikdutta.ion.Ion;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,7 +40,7 @@ public class UsuarioFragment extends Fragment {
     private FrameLayout frameLibras;
     private ToggleButton libras;
 
-    public static String id, nomeu, emailu, senhau, assistenciau;
+    public static String id;
     private final int ID_TEXTO_PARA_VOZ = 100;
     Session session;
     boolean clique = false;
@@ -118,7 +115,7 @@ public class UsuarioFragment extends Fragment {
         });
 
         salvar.setOnClickListener(v -> {
-            updateUser();
+            alterar();
 
             if (clique) {
                 salvar.setVisibility(View.INVISIBLE);
@@ -167,12 +164,15 @@ public class UsuarioFragment extends Fragment {
         });
     }
 
-    private void updateUser() {
-        boolean isValidData = validateFields();
+    private void alterar() {
+        boolean isValidData = validarCampos();
 
         if (isValidData) {
             Usuario aluno = new Usuario();
-            aluno.setUsuario(nome.getText().toString(), email.getText().toString(), senha.getText().toString(), assistencia.getText().toString());
+            aluno.setUsuario(nome.getText().toString(),
+                    email.getText().toString(),
+                    senha.getText().toString(),
+                    assistencia.getText().toString());
 
             AlunoHttpClient alunoHttpClient = new AlunoHttpClient();
             alunoHttpClient.atualizar(getActivity(), aluno).thenAccept(result -> {
@@ -193,7 +193,7 @@ public class UsuarioFragment extends Fragment {
         }
     }
 
-    private boolean validateFields() {
+    private boolean validarCampos() {
         boolean isValid = false;
 
         if (!TextUtils.isEmpty(email.getText().toString())
