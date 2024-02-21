@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
+import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ToggleButton;
 import android.widget.VideoView;
@@ -15,9 +17,14 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.acessai.R;
+import com.example.acessai.adapters.GridAdapterDisciplinas;
+import com.example.acessai.classes.Disciplina;
 import com.example.acessai.classes.Host;
 import com.example.acessai.classes.Utils;
+import com.example.acessai.rest.DisciplinaHttpClient;
 import com.koushikdutta.ion.Ion;
+
+import java.util.ArrayList;
 
 public class DisciplinaFragment extends Fragment {
 
@@ -25,6 +32,8 @@ public class DisciplinaFragment extends Fragment {
     private VideoView videoLibras;
     private FrameLayout frameLibras;
     private ToggleButton libras;
+    private GridView gridView;
+    private GridAdapterDisciplinas gridAdapter;
     private final String HOST_APP = new Host().getUrlApp();
 
     Utils utils = new Utils();
@@ -33,8 +42,10 @@ public class DisciplinaFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_disciplina, container, false);
+        View view = inflater.inflate(R.layout.fragment_disciplinav2, container, false);
         final Context context = inflater.getContext();
+
+        ArrayList<Disciplina> disciplinas = buscarDisciplinas(context);
 
         ImageButton disc1 = (ImageButton) view.findViewById(R.id.btnImgDisc1);
         ImageButton disc2 = (ImageButton) view.findViewById(R.id.btnImgDisc2);
@@ -52,54 +63,13 @@ public class DisciplinaFragment extends Fragment {
         libras = (ToggleButton) view.findViewById(R.id.tbLibras);
         videoLibras = (VideoView) view.findViewById(R.id.videoLibras);
 
-        disc1.setOnClickListener(v -> {
-            nome_disc = "Português";
-            listSubjects(context);
-        });
-        disc2.setOnClickListener(v -> {
-            nome_disc = "Matemática";
-            listSubjects(context);
-        });
-        disc3.setOnClickListener(v -> {
-            nome_disc = "História";
-            listSubjects(context);
-        });
-        disc4.setOnClickListener(v -> {
-            nome_disc = "Geografia";
-            listSubjects(context);
-        });
-        disc5.setOnClickListener(v -> {
-            nome_disc = "Biologia";
-            listSubjects(context);
-        });
-        disc6.setOnClickListener(v -> {
-            nome_disc = "Física";
-            listSubjects(context);
-        });
-        disc7.setOnClickListener(v -> {
-            nome_disc = "Química";
-            listSubjects(context);
-        });
-        disc8.setOnClickListener(v -> {
-            nome_disc = "Filosofia";
-            listSubjects(context);
-        });
-        disc9.setOnClickListener(v -> {
-            nome_disc = "Sociologia";
-            listSubjects(context);
-        });
-        disc10.setOnClickListener(v -> {
-            nome_disc = "Arte";
-            listSubjects(context);
-        });
-        disc11.setOnClickListener(v -> {
-            nome_disc = "Educação Física";
-            listSubjects(context);
-        });
-        disc12.setOnClickListener(v -> {
-            nome_disc = "Inglês";
-            listSubjects(context);
-        });
+        gridView = (GridView) view.findViewById(R.id.gridView);
+
+        System.out.print(disciplinas);
+
+        //ArrayAdapter<Disciplina> adaptador = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, disciplinas);
+        //adaptador.setDropDownViewResource(android.R.layout.simple_list_item_checked);
+
 
         utils.mostrarLibras(frameLibras, libras, HomeFragment.assistenciaAluno);
 
@@ -115,10 +85,27 @@ public class DisciplinaFragment extends Fragment {
                 frameLibras.setVisibility(View.INVISIBLE);
             }
         });
+
+        gridAdapter = new GridAdapterDisciplinas(context, disciplinas);
+        gridView.setAdapter(gridAdapter);
+
         return view;
     }
 
-    private void listSubjects(final Context context){
+    private ArrayList<Disciplina> buscarDisciplinas(final Context context) {
+        ArrayList<Disciplina> disciplinas = new ArrayList<>();
+
+        DisciplinaHttpClient disciplinaHttpClient = new DisciplinaHttpClient();
+        disciplinaHttpClient.buscar(context).thenAccept(result -> {
+            disciplinas.addAll(result);
+        });
+
+        disciplinas.add(new Disciplina(1, "TESTE"));
+
+        return disciplinas;
+    }
+
+    private void listSubjects(final Context context) {
         String url = HOST_APP + "/verificarDisciplina.php";
         Ion.with(context)
                 .load(url)
