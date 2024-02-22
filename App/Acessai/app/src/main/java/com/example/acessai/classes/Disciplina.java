@@ -3,10 +3,12 @@ package com.example.acessai.classes;
 public class Disciplina {
     int id;
     String nome;
+    String imagem;
 
-    public Disciplina (int id,String nome){
+    public Disciplina (int id,String nome, String imagem){
         this.id = id;
         this.nome = nome;
+        this.imagem = imagem;
     }
 
     public int getId() {
@@ -23,5 +25,13 @@ public class Disciplina {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    public String getImagem() {
+        return imagem;
+    }
+
+    public void setImagem(String imagem) {
+        this.imagem = imagem;
     }
 }

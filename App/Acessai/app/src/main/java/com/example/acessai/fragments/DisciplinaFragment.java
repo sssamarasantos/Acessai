@@ -5,10 +5,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.GridView;
-import android.widget.ImageButton;
 import android.widget.ToggleButton;
 import android.widget.VideoView;
 
@@ -36,6 +34,8 @@ public class DisciplinaFragment extends Fragment {
     private GridAdapterDisciplinas gridAdapter;
     private final String HOST_APP = new Host().getUrlApp();
 
+    private ArrayList<Disciplina> disciplinas;
+
     Utils utils = new Utils();
 
     @Override
@@ -45,31 +45,12 @@ public class DisciplinaFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_disciplinav2, container, false);
         final Context context = inflater.getContext();
 
-        ArrayList<Disciplina> disciplinas = buscarDisciplinas(context);
+        disciplinas = buscarDisciplinas(context);
 
-        ImageButton disc1 = (ImageButton) view.findViewById(R.id.btnImgDisc1);
-        ImageButton disc2 = (ImageButton) view.findViewById(R.id.btnImgDisc2);
-        ImageButton disc3 = (ImageButton) view.findViewById(R.id.btnImgDisc3);
-        ImageButton disc4 = (ImageButton) view.findViewById(R.id.btnImgDisc4);
-        ImageButton disc5 = (ImageButton) view.findViewById(R.id.btnImgDisc5);
-        ImageButton disc6 = (ImageButton) view.findViewById(R.id.btnImgDisc6);
-        ImageButton disc7 = (ImageButton) view.findViewById(R.id.btnImgDisc7);
-        ImageButton disc8 = (ImageButton) view.findViewById(R.id.btnImgDisc8);
-        ImageButton disc9 = (ImageButton) view.findViewById(R.id.btnImgDisc9);
-        ImageButton disc10 = (ImageButton) view.findViewById(R.id.btnImgDisc10);
-        ImageButton disc11 = (ImageButton) view.findViewById(R.id.btnImgDisc11);
-        ImageButton disc12 = (ImageButton) view.findViewById(R.id.btnImgDisc12);
         frameLibras = (FrameLayout) view.findViewById(R.id.frameLibras);
         libras = (ToggleButton) view.findViewById(R.id.tbLibras);
         videoLibras = (VideoView) view.findViewById(R.id.videoLibras);
-
         gridView = (GridView) view.findViewById(R.id.gridView);
-
-        System.out.print(disciplinas);
-
-        //ArrayAdapter<Disciplina> adaptador = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, disciplinas);
-        //adaptador.setDropDownViewResource(android.R.layout.simple_list_item_checked);
-
 
         utils.mostrarLibras(frameLibras, libras, HomeFragment.assistenciaAluno);
 
@@ -89,18 +70,18 @@ public class DisciplinaFragment extends Fragment {
         gridAdapter = new GridAdapterDisciplinas(context, disciplinas);
         gridView.setAdapter(gridAdapter);
 
-        return view;
+
+
+            return view;
+
     }
 
     private ArrayList<Disciplina> buscarDisciplinas(final Context context) {
         ArrayList<Disciplina> disciplinas = new ArrayList<>();
 
         DisciplinaHttpClient disciplinaHttpClient = new DisciplinaHttpClient();
-        disciplinaHttpClient.buscar(context).thenAccept(result -> {
-            disciplinas.addAll(result);
-        });
-
-        disciplinas.add(new Disciplina(1, "TESTE"));
+        disciplinaHttpClient.buscar(context).thenAccept(disciplinas::addAll);
+        disciplinas.add(new Disciplina(0, "a", "a"));
 
         return disciplinas;
     }
