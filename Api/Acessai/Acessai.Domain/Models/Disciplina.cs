@@ -7,5 +7,8 @@ namespace Acessai.Domain.Models
     {
         [Column("NOME")]
         public string Nome { get; set; }
+
+        [Column("IMAGEM")]
+        public string Imagem { get; set; }
     }
 }
