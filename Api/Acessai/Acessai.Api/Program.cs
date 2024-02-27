@@ -24,10 +24,12 @@ builder.Services.AddSingleton<DataContext>();
 // Repository
 builder.Services.AddSingleton<IAlunoRepository, AlunoRepository>();
 builder.Services.AddSingleton<IDisciplinaRepository, DisciplinaRepository>();
+builder.Services.AddSingleton<IAulaRepository, AulaRepository>();
 
 // Services
 builder.Services.AddSingleton<IAlunoService, AlunoService>();
 builder.Services.AddSingleton<IDisciplinaService, DisciplinaService>();
+builder.Services.AddSingleton<IAulaService, AulaService>();
 
 // Mapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

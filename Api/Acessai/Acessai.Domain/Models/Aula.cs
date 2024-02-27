@@ -1,5 +1,8 @@
-﻿namespace Acessai.Domain.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Acessai.Domain.Models
 {
+    [Table("AULA")]
     public class Aula : BaseModel
     {
         public string Nome { get; set; }
