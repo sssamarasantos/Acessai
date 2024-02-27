@@ -1,5 +1,6 @@
 package com.example.acessai.adapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
@@ -7,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -28,8 +30,6 @@ public class GridAdapterDisciplinas extends ArrayAdapter<Disciplina> {
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        //Context context = getContext();
-
         View view = convertView;
         if (view == null) {
             // Layout Inflater inflates each item to be displayed in GridView.
@@ -38,10 +38,10 @@ public class GridAdapterDisciplinas extends ArrayAdapter<Disciplina> {
 
         Disciplina disciplina = getItem(position);
         TextView nome = (TextView) view.findViewById(R.id.lblDisc);
-        ImageButton imagem = (ImageButton) view.findViewById(R.id.btnImgDisc);
+        ImageView imagem = (ImageView) view.findViewById(R.id.imgViewDisc);
 
         if (disciplina != null) {
-            int resID = _context.getResources()
+            @SuppressLint("DiscouragedApi") int resID = _context.getResources()
                     .getIdentifier(disciplina.getImagem(), "drawable", _context.getPackageName());
 
             if (resID != 0) {
