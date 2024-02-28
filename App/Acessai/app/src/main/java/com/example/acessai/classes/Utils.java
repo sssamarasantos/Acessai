@@ -10,6 +10,8 @@ import android.widget.VideoView;
 
 import androidx.appcompat.app.AlertDialog;
 
+import com.example.acessai.enums.Assistencia;
+
 public class Utils {
     public void showAlert(String message, final Context context){
 	    //alertdialog - mostra um alerta na tela
@@ -34,12 +36,12 @@ public class Utils {
     }
 
     //metodo chamar libras
-    public void showLibras(FrameLayout frameLayout, ToggleButton toggleButton, String assistance){
+    public void mostrarLibras(FrameLayout frameLayout, ToggleButton toggleButton, String assistencia){
 	    //mantem as botoes invisiveis
         frameLayout.setVisibility(View.INVISIBLE);
         toggleButton.setVisibility(View.INVISIBLE);
 	    //verifica a assistencia
-        if (assistance.equals("Auditiva")){
+        if (assistencia.equals("Auditiva")){
             toggleButton.setVisibility(View.VISIBLE);
         }
     }

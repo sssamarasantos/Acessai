@@ -1,6 +1,5 @@
 package com.example.acessai.activitys;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,28 +16,22 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.acessai.R;
-import com.example.acessai.classes.Host;
 import com.example.acessai.classes.Session;
 import com.example.acessai.classes.Utils;
 import com.example.acessai.fragments.HomeFragment;
 import com.example.acessai.fragments.UsuarioFragment;
+import com.example.acessai.rest.AlunoHttpClient;
 import com.google.android.material.navigation.NavigationView;
-import com.google.gson.JsonObject;
-import com.koushikdutta.ion.Ion;
 
 import java.util.HashMap;
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    private Toolbar toolbar;
     private DrawerLayout drawer;
-    private NavigationView navigationView;
     private Session session;
     private VideoView videoLibras;
     private FrameLayout frameLibras;
     private ToggleButton libras;
-    private final String HOST_APP = new Host().getUrlApp();
-    public static String assistenciaAluno;
 
     Utils utils = new Utils();
 
@@ -49,7 +42,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         session = new Session(this);
 
-        toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         frameLibras = (FrameLayout) findViewById(R.id.frameLibras);
@@ -62,7 +55,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        navigationView = findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         libras.setVisibility(View.INVISIBLE);
@@ -75,8 +68,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         session = new Session(getApplicationContext());
         HashMap<String, String> userDetails = session.getUserDetails();
-        String user = userDetails.get(Session.KEY_EMAIL);
-        callAssistance(user);
+        String email = userDetails.get(Session.KEY_EMAIL);
+        chamarAssistencia(email);
 
         libras.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
@@ -99,12 +92,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
                 builder.setMessage("Tem certeza que deseja sair?");
                 builder.setTitle("Aviso");
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        session.logout();
-                    }
-                });
+                builder.setPositiveButton("OK", (dialog, which) -> session.logout());
                 builder.setNegativeButton("Cancelar", null);
                 builder.create().show();
                 break;
@@ -132,18 +120,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    public void callAssistance(String user) {
-        String url = HOST_APP + "/usuario.php";
-        Ion.with(getBaseContext())
-                .load(url)
-                .setBodyParameter("usuario", user)
-                .asJsonArray()
-                .setCallback((e, result) -> {
-                    for (int i = 0; i < result.size(); i++){
-                        JsonObject ret = result.get(i).getAsJsonObject();
-                        assistenciaAluno = ret.get("ASSISTENCIA_ALUNO").getAsString();
-                    }
-                    utils.showLibras(frameLibras, libras, assistenciaAluno);
-                });
+    public void chamarAssistencia(String email) {
+        AlunoHttpClient alunoHttpClient = new AlunoHttpClient();
+        alunoHttpClient.buscar(getBaseContext(), email).thenAccept(result -> {
+            String assistencia = result.getAssistencia();
+
+            utils.mostrarLibras(frameLibras, libras, assistencia);
+        });
     }
 }

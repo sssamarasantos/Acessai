@@ -20,10 +20,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.acessai.R;
 import com.example.acessai.classes.Host;
+import com.example.acessai.classes.Usuario;
 import com.example.acessai.classes.Utils;
-import com.google.gson.JsonObject;
-import com.koushikdutta.async.future.FutureCallback;
-import com.koushikdutta.ion.Ion;
+import com.example.acessai.enums.Assistencia;
+import com.example.acessai.rest.AlunoHttpClient;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -32,13 +32,10 @@ public class CadastroActivity extends AppCompatActivity {
 
     private EditText login, senha, confSenha, nome, campo;
     private RadioButton auditiva, visual, cognitiva, nenhuma;
-    private Button cadastro;
     private ImageButton falar;
     private FrameLayout frameLibras;
     private ToggleButton libras;
     private VideoView videoLibras;
-    private String assistencia = "";
-    private String loginx, nomex, senhax, confSenhax;
     private final String HOST_APP = new Host().getUrlApp();
     private final int ID_TEXTO_PARA_VOZ = 100;
 
@@ -61,7 +58,7 @@ public class CadastroActivity extends AppCompatActivity {
         cognitiva = (RadioButton) findViewById(R.id.rbCognitiva);
         visual = (RadioButton) findViewById(R.id.rbVisual);
         nenhuma = (RadioButton) findViewById(R.id.rbNenhuma);
-        cadastro = (Button) findViewById(R.id.btnCadastro);
+        Button cadastro = (Button) findViewById(R.id.btnCadastro);
 
         falar.setEnabled(false);
 
@@ -89,16 +86,13 @@ public class CadastroActivity extends AppCompatActivity {
             falar.setEnabled(true);
         });
         //evento botao cadastro
-        cadastro.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loginx = login.getText().toString();
-                nomex = nome.getText().toString();
-                senhax = senha.getText().toString();
-                confSenhax = confSenha.getText().toString();
+        cadastro.setOnClickListener(v -> {
+            Assistencia assistencia = atribuirAssistencia();
 
-                signUp();
-            }
+            Usuario aluno = new Usuario();
+            aluno.setUsuario(nome.getText().toString(), login.getText().toString(), senha.getText().toString(), assistencia.toString());
+
+            cadastrar(aluno);
         });
 
         //evento digitação por voz
@@ -110,7 +104,7 @@ public class CadastroActivity extends AppCompatActivity {
 
             try {
                 startActivityForResult(intentVoz, ID_TEXTO_PARA_VOZ);
-            } catch (ActivityNotFoundException a){
+            } catch (ActivityNotFoundException a) {
                 utils.showAlert("Dispositivo não suporta!", CadastroActivity.this);
             }
         });
@@ -132,75 +126,72 @@ public class CadastroActivity extends AppCompatActivity {
         });
     }
 
-    private void signUp(){
-
-        if (visual.isChecked()) {
-            assistencia = "Visual";
-        }
-        if (cognitiva.isChecked()) {
-            assistencia = "Cognitiva";
-        }
-        if (auditiva.isChecked()) {
-            assistencia = "Auditiva";
-        }
-        if (nenhuma.isChecked()) {
-            assistencia = "Nenhuma";
-        }
-
-        boolean isValidData = validateFields();
+    private void cadastrar(Usuario aluno) {
+        boolean isValidData = validarCampos(aluno, confSenha.getText().toString());
 
         if (isValidData) {
-            String url = HOST_APP + "/cadastrar.php";
-            Ion.with(CadastroActivity.this)
-                    .load(url)
-                    .setBodyParameter("login", loginx)
-                    .setBodyParameter("senha", senhax)
-                    .setBodyParameter("nome", nomex)
-                    .setBodyParameter("assistencia", assistencia)
-                    .asJsonObject()
-                    .setCallback(new FutureCallback<JsonObject>() {
-                        @Override
-                        public void onCompleted(Exception e, JsonObject result) {
-                            String status = result.get("status").getAsString();
-                            if (status.equals("ok")) {
-                                //alert
-                                AlertDialog.Builder builder = new AlertDialog.Builder(CadastroActivity.this);
-                                builder.setMessage("Usuário cadastrado com sucesso!");
-                                builder.setTitle("Aviso");
-                                builder.setNeutralButton("OK", (dialog, which) -> {
-                                    Intent objEsquece = new Intent(CadastroActivity.this, LoginActivity.class);
-                                    startActivity(objEsquece);
-                                    CadastroActivity.this.finish();
-                                });
-                                builder.create().show();
-                            } else {
-                                utils.showAlert("Algo deu errado :(", CadastroActivity.this);
-                                login.setText("");
-                                nome.setText("");
-                                senha.setText("");
-                                confSenha.setText("");
-                                auditiva.setChecked(false);
-                                visual.setChecked(false);
-                                cognitiva.setChecked(false);
-                                nenhuma.setChecked(false);
-                            }
-                        }
+            AlunoHttpClient alunoHttpClient = new AlunoHttpClient();
+            alunoHttpClient.cadastrar(CadastroActivity.this, aluno).thenAccept(result -> {
+                if (result) {
+                    //alert
+                    AlertDialog.Builder builder = new AlertDialog.Builder(CadastroActivity.this);
+                    builder.setMessage("Usuário cadastrado com sucesso!");
+                    builder.setTitle("Aviso");
+                    builder.setNeutralButton("OK", (dialog, which) -> {
+                        Intent intent = new Intent(CadastroActivity.this, LoginActivity.class);
+                        startActivity(intent);
+                        CadastroActivity.this.finish();
                     });
+                    builder.create().show();
+                } else {
+                    utils.showAlert("Algo deu errado :(", CadastroActivity.this);
+                    login.setText("");
+                    nome.setText("");
+                    senha.setText("");
+                    confSenha.setText("");
+                    auditiva.setChecked(false);
+                    visual.setChecked(false);
+                    cognitiva.setChecked(false);
+                    nenhuma.setChecked(false);
+                }
+            }).exceptionally(e -> {
+                // lida com a exceção
+                return null;
+            });
         }
     }
 
+    private Assistencia atribuirAssistencia(){
+        Assistencia assistencia = Assistencia.Nenhuma;
+
+        if (visual.isChecked()) {
+            assistencia = Assistencia.Visual;
+        }
+        if (cognitiva.isChecked()) {
+            assistencia = Assistencia.Cognitiva;
+        }
+        if (auditiva.isChecked()) {
+            assistencia = Assistencia.Auditiva;
+        }
+        if (nenhuma.isChecked()) {
+            assistencia = Assistencia.Nenhuma;
+        }
+
+        return assistencia;
+    }
+
     //verifica a validade dos campos
-    private boolean validateFields() {
+    private boolean validarCampos(Usuario aluno, String confirmarSenha) {
         boolean isValid = false;
 
-        if (!TextUtils.isEmpty(loginx)
-                && !TextUtils.isEmpty(nomex)
-                && !TextUtils.isEmpty(senhax)
-                && !TextUtils.isEmpty(confSenhax)
-                && !assistencia.isEmpty()){
-            if (android.util.Patterns.EMAIL_ADDRESS.matcher(loginx).matches()){
-                if (senhax.length() >= 6){
-                    if (senhax.equals(confSenhax)) {
+        if (!TextUtils.isEmpty(aluno.getEmail())
+                && !TextUtils.isEmpty(aluno.getNome())
+                && !TextUtils.isEmpty(aluno.getSenha())
+                && !TextUtils.isEmpty(confirmarSenha)
+                && !TextUtils.isEmpty(aluno.getAssistencia().toString())) {
+            if (android.util.Patterns.EMAIL_ADDRESS.matcher(aluno.getEmail()).matches()) {
+                if (aluno.getSenha().length() >= 6) {
+                    if (aluno.getSenha().equals(confirmarSenha)) {
                         isValid = true;
                     } else {
                         utils.showAlert("Senhas não conferem!", CadastroActivity.this);

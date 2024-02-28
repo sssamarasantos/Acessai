@@ -56,7 +56,7 @@ public class AulasFragment extends Fragment {
         idVideoaula = new ArrayList<>();
 
         list(context);
-        utils.showLibras(frameLibras, libras, HomeFragment.assistenciaAluno);
+        utils.mostrarLibras(frameLibras, libras, HomeFragment.assistenciaAluno);
 
         lVideoaulas.setOnItemClickListener((parent, view1, position, id) -> {
             iVideoaula = idVideoaula.get(position);

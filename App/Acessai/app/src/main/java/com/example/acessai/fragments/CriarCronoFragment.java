@@ -82,7 +82,7 @@ public class CriarCronoFragment extends Fragment {
         }
 
         callVideoClass(context);
-        utils.showLibras(frameLibras, libras, HomeFragment.assistenciaAluno);
+        utils.mostrarLibras(frameLibras, libras, HomeFragment.assistenciaAluno);
 
         criar.setOnClickListener(v -> {
             videosx = videos.getSelectedItem().toString();

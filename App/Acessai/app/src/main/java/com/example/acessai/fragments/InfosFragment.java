@@ -52,7 +52,7 @@ public class InfosFragment extends Fragment {
             startActivity(intent);
         });
 
-        utils.showLibras(frameLibras, libras, HomeFragment.assistenciaAluno);
+        utils.mostrarLibras(frameLibras, libras, HomeFragment.assistenciaAluno);
 
         libras.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {

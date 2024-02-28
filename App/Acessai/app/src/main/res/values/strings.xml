@@ -38,22 +38,10 @@
     <string name="lblSenhaUser">SENHA</string>
     <string name="lblAssistUser">ASSISTÊNCIA</string>
     <string name="btnTbConosco">TRABALHE CONOSCO</string>
-    <string name="lblDisc1">PORTUGUÊS</string>
-    <string name="lblDisc2">MATEMÁTICA</string>
-    <string name="lblDisc3">HISTÓRIA</string>
-    <string name="lblDisc4">GEOGRAFIA</string>
-    <string name="lblDisc5">BIOLOGIA</string>
-    <string name="lblDisc6">FÍSICA</string>
-    <string name="lblDisc7">QUÍMICA</string>
-    <string name="lblDisc8">FILOSOFIA</string>
-    <string name="lblDisc9">SOCIOLOGIA</string>
-    <string name="lblDisc10">ARTE</string>
-    <string name="lblDisc11">EDUCAÇÃO FÍSICA</string>
-    <string name="lblDisc12">INGLÊS</string>
     <string name="open_drawer">Abrir</string>
     <string name="close_drawer">Fechar</string>
     <string name="nav_home">Home</string>
     <string name="nav_user">Usuario</string>
     <string name="nav_sair">Sair</string>
-
+    <string name="descricao_imagem">Disciplina</string>
 </resources>

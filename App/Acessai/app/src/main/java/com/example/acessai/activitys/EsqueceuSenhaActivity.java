@@ -8,7 +8,6 @@ import android.speech.RecognizerIntent;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -32,8 +31,6 @@ import java.util.Locale;
 public class EsqueceuSenhaActivity extends AppCompatActivity {
 
     private EditText email;
-    private Button enviar;
-    private ImageButton falar;
     private VideoView videoLibras;
     private FrameLayout frameLibras;
     private ToggleButton libras;
@@ -47,58 +44,47 @@ public class EsqueceuSenhaActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_esqueceu_senha);
 
-        falar = (ImageButton) findViewById(R.id.btnImgFalar);
+        ImageButton falar = (ImageButton) findViewById(R.id.btnImgFalar);
         videoLibras = (VideoView) findViewById(R.id.videoLibras);
         frameLibras = (FrameLayout) findViewById(R.id.frameLibras);
         libras = (ToggleButton) findViewById(R.id.tbLibras);
         email = (EditText) findViewById(R.id.txtEmailE);
-        enviar = (Button) findViewById(R.id.btnEnviar);
+        Button enviar = (Button) findViewById(R.id.btnEnviar);
 
         //Evento botao enviar
-        enviar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                forgotPassword(email.getText().toString());
-            }
-        });
+        enviar.setOnClickListener(v -> forgotPassword(email.getText().toString()));
 
-        falar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent iVoz = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-                iVoz.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-                iVoz.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
-                iVoz.putExtra(RecognizerIntent.EXTRA_PROMPT, "Fale agora");
+        falar.setOnClickListener(v -> {
+            Intent iVoz = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+            iVoz.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+            iVoz.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+            iVoz.putExtra(RecognizerIntent.EXTRA_PROMPT, "Fale agora");
 
-                try {
-                    startActivityForResult(iVoz, ID_TEXTO_PARA_VOZ);
-                } catch (ActivityNotFoundException a){
-                    utils.showAlert("Dispositivo não suporta!", EsqueceuSenhaActivity.this);
-                }
+            try {
+                startActivityForResult(iVoz, ID_TEXTO_PARA_VOZ);
+            } catch (ActivityNotFoundException a){
+                utils.showAlert("Dispositivo não suporta!", EsqueceuSenhaActivity.this);
             }
         });
 
         frameLibras.setVisibility(View.INVISIBLE);
 
-        libras.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    libras.setText("");
-                    frameLibras.setVisibility(View.VISIBLE);
-                    //video
-                    String videoPath = "android.resource://" + getPackageName() + "/" + R.raw.video_tela_esqueceu;
-                    utils.showVideo(videoLibras, videoPath);
-                } else {
-                    libras.setText("");
-                    frameLibras.setVisibility(View.INVISIBLE);
-                }
+        libras.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                libras.setText("");
+                frameLibras.setVisibility(View.VISIBLE);
+                //video
+                String videoPath = "android.resource://" + getPackageName() + "/" + R.raw.video_tela_esqueceu;
+                utils.showVideo(videoLibras, videoPath);
+            } else {
+                libras.setText("");
+                frameLibras.setVisibility(View.INVISIBLE);
             }
         });
     }
 
     private void forgotPassword(String emailf) {
-        boolean isValidData = validateFields(emailf);
+        boolean isValidData = validarCampos(emailf);
         if (isValidData) {
             String url = HOST_APP + "/recuperarSenha.php";
             Ion.with(EsqueceuSenhaActivity.this)
@@ -136,7 +122,7 @@ public class EsqueceuSenhaActivity extends AppCompatActivity {
                     });
         }
     }
-    private boolean validateFields(String emailf) {
+    private boolean validarCampos(String emailf) {
         boolean isValid = false;
 
         if (!TextUtils.isEmpty(emailf)) {
