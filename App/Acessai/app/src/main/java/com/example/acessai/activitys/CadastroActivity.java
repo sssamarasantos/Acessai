@@ -131,7 +131,7 @@ public class CadastroActivity extends AppCompatActivity {
 
         if (isValidData) {
             AlunoHttpClient alunoHttpClient = new AlunoHttpClient();
-            alunoHttpClient.cadastrar(CadastroActivity.this, aluno).thenAccept(result -> {
+            alunoHttpClient.inserir(CadastroActivity.this, aluno).thenAccept(result -> {
                 if (result) {
                     //alert
                     AlertDialog.Builder builder = new AlertDialog.Builder(CadastroActivity.this);

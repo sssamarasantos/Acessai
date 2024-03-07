@@ -102,8 +102,8 @@ public class HomeFragment extends Fragment {
     //metodo chamar usuário
     private void chamarAssistencia(String email) {
         AlunoHttpClient alunoHttpClient = new AlunoHttpClient();
-        alunoHttpClient.buscar(getActivity(), email).thenAccept(result -> {
-            assistenciaAluno = result.getAssistencia();
+        alunoHttpClient.buscarAssistencia(getActivity(), email).thenAccept(result -> {
+            assistenciaAluno = result.toString();
 
             utils.mostrarLibras(frameLibras, libras, assistenciaAluno);
         });

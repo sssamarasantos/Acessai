@@ -174,7 +174,7 @@ public class LoginActivity extends AppCompatActivity {
         //se os dados estiverem corretos
         if (isValidData) {
             AlunoHttpClient alunoHttpClient = new AlunoHttpClient();
-            alunoHttpClient.logar(getBaseContext(), email, senha).thenAccept(result -> {
+            alunoHttpClient.logar(LoginActivity.this, email, senha).thenAccept(result -> {
                 if (result) {
                     Session session = new Session(LoginActivity.this);
                     session.createSession(email, senha);
@@ -183,10 +183,7 @@ public class LoginActivity extends AppCompatActivity {
                     startActivity(intent);
                     LoginActivity.this.finish();
                 } else {
-                    utils.showAlert("Algo deu errado :(", LoginActivity.this);
-
-                    emailx.setText("");
-                    senhax.setText("");
+                    utils.showAlert("Email ou senha incorretos!", LoginActivity.this);
                 }
             }).exceptionally(e -> {
                 // lida com a exceção

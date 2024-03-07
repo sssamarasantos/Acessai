@@ -159,7 +159,7 @@ public class UsuarioFragment extends Fragment {
             nome.setText(result.getNome());
             email.setText(result.getEmail());
             senha.setText(result.getSenha());
-            assistencia.setText(result.getAssistencia().toString());
+            assistencia.setText(result.getAssistencia());
             utils.mostrarLibras(frameLibras, libras, assistencia.toString());
         });
     }
@@ -175,7 +175,7 @@ public class UsuarioFragment extends Fragment {
                     assistencia.getText().toString());
 
             AlunoHttpClient alunoHttpClient = new AlunoHttpClient();
-            alunoHttpClient.atualizar(getActivity(), aluno).thenAccept(result -> {
+            alunoHttpClient.alterar(getActivity(), aluno).thenAccept(result -> {
                 if (result) {
                     utils.showAlert("Alteração feita com sucesso!", getContext());
 

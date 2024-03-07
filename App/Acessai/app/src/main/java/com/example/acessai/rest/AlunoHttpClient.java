@@ -4,26 +4,28 @@ import android.content.Context;
 
 import com.example.acessai.classes.Host;
 import com.example.acessai.classes.Usuario;
-import com.google.gson.JsonObject;
+import com.example.acessai.enums.Assistencia;
 import com.google.gson.reflect.TypeToken;
 import com.koushikdutta.ion.Ion;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class AlunoHttpClient {
-    private final String HOST_API = new Host().getUrlApi();
-    private final String urlBase = HOST_API + "/api/Aluno";
+    private final String urlBase = new Host().getUrlApp() + "/aluno";
 
-    public CompletableFuture<Usuario> buscar(Context context, String email) {
+    public CompletableFuture<Usuario> buscar(final Context context, String email) {
         TypeToken<Usuario> type = new TypeToken<Usuario>() {};
         CompletableFuture<Usuario> response = new CompletableFuture<>();
 
         Ion.with(context)
-                .load("GET", urlBase + "?email=" + email)
+                .load(urlBase + "/buscar.php")
+                .setBodyParameter("email", email)
                 .as(type)
-                .setCallback((e, usuario) -> {
+                .setCallback((e, result) -> {
                     if (e == null) {
-                        response.complete(usuario);
+                        response.complete(result);
                     } else {
                         response.completeExceptionally(e);
                     }
@@ -32,22 +34,17 @@ public class AlunoHttpClient {
         return response;
     }
 
-    public CompletableFuture<Boolean> cadastrar(Context context, Usuario aluno) {
-        CompletableFuture<Boolean> response = new CompletableFuture<>();
-
-        JsonObject json = new JsonObject();
-        json.addProperty("nome", aluno.getNome());
-        json.addProperty("email", aluno.getEmail());
-        json.addProperty("senha", aluno.getSenha());
-        json.addProperty("assistencia", aluno.getAssistencia());
+    public CompletableFuture<Assistencia> buscarAssistencia(final Context context, String email){
+        TypeToken<Assistencia> type = new TypeToken<Assistencia>() {};
+        CompletableFuture<Assistencia> response = new CompletableFuture<>();
 
         Ion.with(context)
-                .load(urlBase + "/cadastro")
-                .setJsonObjectBody(json)
-                .asString()
+                .load(urlBase + "/buscarAssistencia.php")
+                .setBodyParameter("email", email)
+                .as(type)
                 .setCallback((e, result) -> {
                     if (e == null) {
-                        response.complete(Boolean.parseBoolean(result));
+                        response.complete(result);
                     } else {
                         response.completeExceptionally(e);
                     }
@@ -56,20 +53,20 @@ public class AlunoHttpClient {
         return response;
     }
 
-    public CompletableFuture<Boolean> logar(Context context, String email, String password) {
+    public CompletableFuture<Boolean> inserir(final Context context, Usuario aluno) {
+        TypeToken<Boolean> type = new TypeToken<Boolean>() {};
         CompletableFuture<Boolean> response = new CompletableFuture<>();
 
-        JsonObject json = new JsonObject();
-        json.addProperty("email", email);
-        json.addProperty("senha", password);
-
         Ion.with(context)
-                .load(urlBase + "/Login")
-                .setJsonObjectBody(json)
-                .asString()
+                .load(urlBase + "/inserir.php")
+                .setBodyParameter("nome", aluno.getNome())
+                .setBodyParameter("email", aluno.getEmail())
+                .setBodyParameter("senha", aluno.getSenha())
+                .setBodyParameter("assistencia", aluno.getAssistencia())
+                .as(type)
                 .setCallback((e, result) -> {
                     if (e == null) {
-                        response.complete(Boolean.parseBoolean(result));
+                        response.complete(result);
                     } else {
                         response.completeExceptionally(e);
                     }
@@ -78,22 +75,41 @@ public class AlunoHttpClient {
         return response;
     }
 
-    public CompletableFuture<Boolean> atualizar(Context context, Usuario aluno){
+    public CompletableFuture<Boolean> logar(final Context context, String email, String senha) {
+        TypeToken<Boolean> type = new TypeToken<Boolean>() {};
         CompletableFuture<Boolean> response = new CompletableFuture<>();
 
-        JsonObject json = new JsonObject();
-        json.addProperty("nome", aluno.getNome());
-        json.addProperty("email", aluno.getEmail());
-        json.addProperty("senha", aluno.getSenha());
-        json.addProperty("assistencia", aluno.getAssistencia());
-
         Ion.with(context)
-                .load("PUT", urlBase + "/" + aluno.getId())
-                .setJsonObjectBody(json)
-                .asString()
+                .load(urlBase + "/login.php")
+                .setBodyParameter("email", email)
+                .setBodyParameter("senha", senha)
+                .as(type)
                 .setCallback((e, result) -> {
                     if (e == null) {
-                        response.complete(Boolean.parseBoolean(result));
+                        response.complete(result);
+                    } else {
+                        response.completeExceptionally(e);
+                    }
+                });
+
+        return response;
+    }
+
+    public CompletableFuture<Boolean> alterar(final Context context, Usuario aluno) {
+        TypeToken<Boolean> type = new TypeToken<Boolean>() {};
+        CompletableFuture<Boolean> response = new CompletableFuture<>();
+
+        Ion.with(context)
+                .load(urlBase + "/alterar.php")
+                .setBodyParameter("id", String.valueOf(aluno.getId()))
+                .setBodyParameter("nome", aluno.getNome())
+                .setBodyParameter("email", aluno.getEmail())
+                .setBodyParameter("senha", aluno.getSenha())
+                .setBodyParameter("assistencia", aluno.getAssistencia())
+                .as(type)
+                .setCallback((e, result) -> {
+                    if (e == null) {
+                        response.complete(result);
                     } else {
                         response.completeExceptionally(e);
                     }

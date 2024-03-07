@@ -18,6 +18,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.example.acessai.R;
 import com.example.acessai.classes.Session;
 import com.example.acessai.classes.Utils;
+import com.example.acessai.enums.Assistencia;
 import com.example.acessai.fragments.HomeFragment;
 import com.example.acessai.fragments.UsuarioFragment;
 import com.example.acessai.rest.AlunoHttpClient;
@@ -122,10 +123,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     public void chamarAssistencia(String email) {
         AlunoHttpClient alunoHttpClient = new AlunoHttpClient();
-        alunoHttpClient.buscar(getBaseContext(), email).thenAccept(result -> {
-            String assistencia = result.getAssistencia();
-
-            utils.mostrarLibras(frameLibras, libras, assistencia);
+        alunoHttpClient.buscarAssistencia(getBaseContext(), email).thenAccept(result -> {
+            utils.mostrarLibras(frameLibras, libras, result.toString());
         });
     }
 }
