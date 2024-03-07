@@ -1,3 +1,3 @@
 <?php
-$conexao = mysqli_connect("localhost","id21828067_adms", "Tcc_1234_banco", "id21828067_acessai");
+$conexao = new mysqli("localhost", "id21828067_adm", "Acessai@123", "id21828067_acessai_novo");
 ?>
